@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCS - โรงพยาบาลเขาสุกิม</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0D4F6E;
+    --primary-light: #1A6F96;
+    --primary-dark: #083344;
+    --accent: #E07A2F;
+    --accent-light: #F0924A;
+    --bg: #EEF4F8;
+    --card: #FFFFFF;
+    --text: #1A2733;
+    --text-muted: #5A7080;
+    --border: #C8DDE8;
+    --green: #1E8C5A;
+    --green-bg: #E8F5EF;
+    --yellow: #B8860B;
+    --yellow-bg: #FFF9E6;
+    --orange: #C85A1A;
+    --orange-bg: #FEF0E6;
+    --red: #B81C1C;
+    --red-bg: #FDEAEA;
+    --purple: #6B3FA0;
+    --purple-bg: #F2ECFA;
+    --shadow: 0 2px 12px rgba(13,79,110,0.10);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+    color: white;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(8,51,68,0.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 24px 10px;
+  }
+  .hospital-logo {
+    width: 64px;
+    height: 64px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 28px;
+  }
+  .header-text { flex: 1; }
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.2px;
+  }
+  .header-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.82;
+    margin-top: 2px;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: rgba(0,0,0,0.2);
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'Sarabun', sans-serif;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    letter-spacing: 0.2px;
+  }
+  .nav-tab:hover { color: rgba(255,255,255,0.95); background: rgba(255,255,255,0.07); }
+  .nav-tab.active { color: #fff; border-bottom-color: var(--accent-light); background: rgba(255,255,255,0.1); }
+
+  /* ===== MAIN ===== */
+  main { max-width: 960px; margin: 0 auto; padding: 20px 16px 120px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ===== PATIENT SUMMARY ===== */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--primary);
+    color: white;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body { padding: 14px 16px; }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .input-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+  .input-row.single { grid-template-columns: 1fr; }
+  label { display: block; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 3px; }
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #FAFCFE;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    background: #fff;
+  }
+
+  /* ===== SCORE DISPLAY ===== */
+  .score-display {
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: var(--radius);
+    margin-top: 8px;
+    border: 2px solid var(--border);
+  }
+  .score-number { font-size: 42px; font-weight: 700; line-height: 1; }
+  .score-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px; }
+  .score-interp { font-size: 13px; font-weight: 700; margin-top: 6px; }
+
+  .risk-low { border-color: var(--green); background: var(--green-bg); }
+  .risk-low .score-number, .risk-low .score-interp { color: var(--green); }
+  .risk-med { border-color: var(--yellow); background: var(--yellow-bg); }
+  .risk-med .score-number, .risk-med .score-interp { color: var(--yellow); }
+  .risk-high { border-color: var(--orange); background: var(--orange-bg); }
+  .risk-high .score-number, .risk-high .score-interp { color: var(--orange); }
+  .risk-critical { border-color: var(--red); background: var(--red-bg); }
+  .risk-critical .score-number, .risk-critical .score-interp { color: var(--red); }
+  .risk-purple { border-color: var(--purple); background: var(--purple-bg); }
+  .risk-purple .score-number, .risk-purple .score-interp { color: var(--purple); }
+  .risk-neutral { border-color: var(--border); background: #F8FAFB; }
+  .risk-neutral .score-number { color: var(--primary); }
+
+  /* ===== ASSESSMENT TABLE ===== */
+  .assess-section { margin-bottom: 16px; }
+  .assess-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 8px 12px;
+    background: #EBF3F8;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 8px;
+  }
+  .assess-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+  }
+  .assess-item:hover { border-color: var(--primary-light); background: #F0F7FC; }
+  .assess-item.selected { border-color: var(--primary); background: #E8F0F5; }
+  .assess-item input[type="radio"] { margin-top: 3px; flex-shrink: 0; accent-color: var(--primary); width: 16px; height: 16px; }
+  .assess-item-score {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .assess-item-text { flex: 1; font-size: 13.5px; }
+
+  /* ===== PCS RESULT ===== */
+  .pcs-result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .pcs-level-bar {
+    display: flex;
+    gap: 4px;
+    margin: 12px 0;
+  }
+  .pcs-level-seg {
+    flex: 1;
+    height: 10px;
+    border-radius: 5px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .pcs-level-seg.active-1 { background: var(--green); }
+  .pcs-level-seg.active-2 { background: var(--yellow); }
+  .pcs-level-seg.active-3 { background: var(--orange); }
+  .pcs-level-seg.active-4 { background: var(--red); }
+  .pcs-level-seg.active-5 { background: var(--purple); }
+
+  .pcs-big {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--primary);
+  }
+  .pcs-score-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .pcs-domain-score {
+    text-align: center;
+    padding: 8px 6px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+  }
+  .pcs-domain-score .ds-num { font-size: 22px; font-weight: 700; color: var(--primary); }
+  .pcs-domain-score .ds-label { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+
+  .action-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+  }
+  .action-box ul { margin: 6px 0 0 18px; }
+  .action-box li { margin-bottom: 3px; }
+
+  /* ===== ALERT TRIGGER ===== */
+  .alert-trigger {
+    background: var(--red-bg);
+    border: 2px solid var(--red);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    display: none;
+  }
+  .alert-trigger.show { display: block; }
+  .alert-trigger-title { color: var(--red); font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+
+  /* ===== NEWS2 ===== */
+  .news2-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .news2-table th {
+    background: var(--primary);
+    color: white;
+    padding: 8px 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .news2-table td {
+    padding: 8px 6px;
+    font-size: 12.5px;
+    text-align: center;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .news2-table tr:nth-child(even) td { background: #F8FAFB; }
+  .news2-input { width: 72px; padding: 5px 4px; text-align: center; font-size: 13px; border: 1.5px solid var(--border); border-radius: 5px; font-family: 'Sarabun',sans-serif; }
+  .news2-score-cell { font-weight: 700; font-size: 16px; width: 36px; }
+  .s0 { color: #1E8C5A; } .s1 { color: #B8860B; } .s2 { color: var(--orange); } .s3 { color: var(--red); }
+  .bg-s3 { background: #FDEAEA !important; }
+  .bg-s2 { background: #FEF0E6 !important; }
+  .bg-s1 { background: #FFF9E6 !important; }
+
+  /* ===== GCS ===== */
+  .gcs-row {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .gcs-row-header {
+    background: #EBF3F8;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--primary);
+  }
+  .gcs-options { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; }
+  .gcs-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12.5px;
+    transition: all 0.15s;
+    background: white;
+  }
+  .gcs-option:hover { border-color: var(--primary-light); background: #F0F7FC; }
+  .gcs-option.selected { border-color: var(--primary); background: var(--primary); color: white; }
+  .gcs-option input { display: none; }
+  .gcs-score-badge {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .gcs-option:not(.selected) .gcs-score-badge { background: var(--bg); color: var(--primary); }
+
+  /* ===== BRADEN ===== */
+  .braden-domain {
+    margin-bottom: 12px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .braden-domain-header {
+    background: #EBF3F8;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .braden-options { display: flex; flex-direction: column; padding: 8px 12px; gap: 5px; }
+  .braden-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+    background: white;
+  }
+  .braden-option:hover { border-color: var(--primary-light); background: #F0F7FC; }
+  .braden-option.selected { border-color: var(--primary); background: #E8F0F5; }
+  .braden-option input { display: none; }
+  .braden-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+
+  /* ===== MORSE ===== */
+  .morse-item {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .morse-item-header {
+    background: #EBF3F8;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--primary);
+  }
+  .morse-options { display: flex; flex-direction: column; padding: 8px 12px; gap: 5px; }
+  .morse-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+    background: white;
+  }
+  .morse-option:hover { border-color: var(--primary-light); background: #F0F7FC; }
+  .morse-option.selected { border-color: var(--primary); background: #E8F0F5; }
+  .morse-option input { display: none; }
+  .morse-score-pill { background: var(--primary); color: white; border-radius: 12px; padding: 2px 9px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .morse-option.selected .morse-score-pill { background: white; color: var(--primary); }
+
+  /* ===== BARTHEL ===== */
+  .barthel-item {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .barthel-item-header {
+    background: #EBF3F8;
+    padding: 7px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--primary);
+  }
+  .barthel-options { display: flex; flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
+  .barthel-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12.5px;
+    transition: all 0.15s;
+    background: white;
+  }
+  .barthel-option:hover { border-color: var(--primary-light); background: #F0F7FC; }
+  .barthel-option.selected { border-color: var(--primary); background: var(--primary); color: white; }
+  .barthel-option input { display: none; }
+  .barthel-score-badge { background: rgba(255,255,255,0.25); border-radius: 10px; padding: 1px 7px; font-weight: 700; font-size: 12px; }
+  .barthel-option:not(.selected) .barthel-score-badge { background: var(--bg); color: var(--primary); }
+
+  /* ===== MODS ===== */
+  .mods-table { width: 100%; border-collapse: collapse; }
+  .mods-table th { background: var(--primary); color: white; padding: 8px 10px; font-size: 13px; text-align: left; }
+  .mods-table td { padding: 8px 10px; border: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+  .mods-table tr:nth-child(even) td { background: #F8FAFB; }
+  .mods-select { padding: 6px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Sarabun',sans-serif; font-size: 13px; width: 100%; background: white; }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-accent:hover { background: var(--accent-light); }
+  .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+  .btn-outline:hover { background: var(--bg); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+  /* ===== SECTION HEADER ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .section-icon {
+    width: 46px;
+    height: 46px;
+    background: var(--primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+  .section-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ===== INTERPRETATION TABLE ===== */
+  .interp-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  .interp-table th { background: var(--primary); color: white; padding: 8px 10px; text-align: left; }
+  .interp-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .interp-table tr:last-child td { border-bottom: none; }
+  .interp-table tr:nth-child(even) td { background: #F8FAFB; }
+
+  /* ===== FLOATING SUMMARY ===== */
+  .floating-summary {
+    position: fixed;
+    bottom: 20px;
+    right: 16px;
+    background: var(--primary-dark);
+    color: white;
+    border-radius: 14px;
+    padding: 12px 18px;
+    box-shadow: 0 8px 30px rgba(8,51,68,0.4);
+    z-index: 200;
+    min-width: 200px;
+    max-width: 280px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .floating-summary:hover { transform: translateY(-2px); }
+  .floating-summary-title { font-size: 11px; font-weight: 700; opacity: 0.7; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .floating-scores { display: flex; gap: 8px; flex-wrap: wrap; }
+  .float-score-item { text-align: center; }
+  .float-score-val { font-size: 18px; font-weight: 700; line-height: 1; }
+  .float-score-lbl { font-size: 9px; opacity: 0.7; font-weight: 600; }
+  .float-pcs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+  .float-pcs-num { font-size: 28px; font-weight: 700; }
+  .float-pcs-label { font-size: 12px; line-height: 1.3; }
+
+  /* ===== TIPS ===== */
+  .tip-box {
+    background: #E8F3FB;
+    border: 1.5px solid #C0DBF0;
+    border-left: 4px solid var(--primary-light);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin: 12px 0;
+    color: var(--primary-dark);
+  }
+  .tip-box strong { color: var(--primary); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--primary-dark);
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    padding: 18px 16px;
+    margin-top: 40px;
+    font-size: 13.5px;
+  }
+  .footer-ksk {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .footer-ksk span { color: var(--accent-light); }
+  .footer-sub { font-size: 12px; opacity: 0.65; margin-top: 4px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .header-top { padding: 10px 14px 8px; }
+    .header-title { font-size: 14px; }
+    main { padding: 14px 10px 110px; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .pcs-score-grid { grid-template-columns: repeat(5,1fr); }
+    .input-row { grid-template-columns: 1fr; }
+    .input-row.triple { grid-template-columns: 1fr 1fr; }
+    .floating-summary { right: 10px; min-width: 160px; padding: 10px 12px; }
+  }
+
+  /* ===== HIGHLIGHT ===== */
+  .badge-level {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .badge-1 { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+  .badge-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }
+  .badge-3 { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange); }
+  .badge-4 { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+  .badge-5 { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple); }
+  .badge-na { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="hospital-logo">🏥</div>
+    <div class="header-text">
+      <div class="header-title">เครื่องมือประเมินทางคลินิกและจำแนกประเภทผู้ป่วย</div>
+      <div class="header-title" style="font-size:14px;font-weight:600;opacity:0.9;">Patient Classification System (PCS)</div>
+      <div class="header-subtitle">โรงพยาบาลเขาสุกิม &nbsp;·&nbsp; อ.ท่าใหม่ จ.จันทบุรี</div>
+    </div>
+    <div class="header-badge">WI-NUR-IPD-001</div>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('patient')">📋 ข้อมูลผู้ป่วย</button>
+    <button class="nav-tab" onclick="showTab('news2')">📊 NEWS2</button>
+    <button class="nav-tab" onclick="showTab('gcs')">🧠 GCS</button>
+    <button class="nav-tab" onclick="showTab('barthel')">🦾 Barthel</button>
+    <button class="nav-tab" onclick="showTab('morse')">⚠️ Morse Fall</button>
+    <button class="nav-tab" onclick="showTab('braden')">🛏️ Braden</button>
+    <button class="nav-tab" onclick="showTab('mods')">🫁 MODS</button>
+    <button class="nav-tab" onclick="showTab('pcs')">🏷️ PCS ผลสรุป</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ===== PATIENT SECTION ===== -->
+<div id="section-patient" class="section active">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <div class="section-title">Patient Summary</div>
+      <div class="section-desc">กรอกข้อมูลผู้ป่วยและสัญญาณชีพ เพื่อใช้ประกอบการประเมิน</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header">🪪 ข้อมูลทั่วไป</div>
+    <div class="card-body">
+      <div class="input-row">
+        <div><label>HN / เลขที่ผู้ป่วย</label><input type="text" id="pt-hn" placeholder="เช่น HN 12345"></div>
+        <div><label>ชื่อ-สกุล ผู้ป่วย</label><input type="text" id="pt-name" placeholder="ชื่อ นามสกุล"></div>
+      </div>
+      <div class="input-row triple">
+        <div><label>อายุ (ปี)</label><input type="number" id="pt-age" placeholder="อายุ" min="0" max="120"></div>
+        <div><label>เพศ</label>
+          <select id="pt-sex">
+            <option value="">-- เลือก --</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+          </select>
+        </div>
+        <div><label>เตียงที่</label><input type="text" id="pt-bed" placeholder="เช่น Bed 5"></div>
+      </div>
+      <div class="input-row">
+        <div><label>วินิจฉัย / Diagnosis</label><input type="text" id="pt-dx" placeholder="วินิจฉัยหลัก"></div>
+        <div><label>แพทย์เจ้าของไข้</label><input type="text" id="pt-dr" placeholder="ชื่อแพทย์"></div>
+      </div>
+      <div class="input-row">
+        <div><label>วันที่ประเมิน</label><input type="date" id="pt-date"></div>
+        <div><label>เวรที่ประเมิน</label>
+          <select id="pt-shift">
+            <option value="">-- เลือก --</option>
+            <option value="เวรเช้า">เวรเช้า (08:00-16:00)</option>
+            <option value="เวรบ่าย">เวรบ่าย (16:00-00:00)</option>
+            <option value="เวรดึก">เวรดึก (00:00-08:00)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header">💊 สัญญาณชีพ (Vital Signs)</div>
+    <div class="card-body">
+      <div class="input-row triple">
+        <div><label>อุณหภูมิ (°C)</label><input type="number" id="vs-temp" placeholder="36.5–37.4" step="0.1" oninput="calcNEWS2()"></div>
+        <div><label>ชีพจร (ครั้ง/นาที)</label><input type="number" id="vs-hr" placeholder="60–100" oninput="calcNEWS2()"></div>
+        <div><label>อัตราหายใจ (ครั้ง/นาที)</label><input type="number" id="vs-rr" placeholder="12–20" oninput="calcNEWS2()"></div>
+      </div>
+      <div class="input-row triple">
+        <div><label>SBP (mmHg)</label><input type="number" id="vs-sbp" placeholder="90–140" oninput="calcNEWS2()"></div>
+        <div><label>DBP (mmHg)</label><input type="number" id="vs-dbp" placeholder="60–90"></div>
+        <div><label>SpO₂ (%)</label><input type="number" id="vs-spo2" placeholder="≥95" oninput="calcNEWS2()"></div>
+      </div>
+      <div class="input-row">
+        <div>
+          <label>ออกซิเจนเสริม</label>
+          <select id="vs-o2" onchange="calcNEWS2()">
+            <option value="no">ไม่ได้รับ O₂ เสริม</option>
+            <option value="yes">ได้รับ O₂ เสริม</option>
+          </select>
+        </div>
+        <div>
+          <label>ระดับความรู้สึกตัว (AVPU)</label>
+          <select id="vs-avpu" onchange="calcNEWS2()">
+            <option value="A">A - Alert (รู้สึกตัวดี)</option>
+            <option value="C">C/V/P/U - ผิดปกติ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tip-box" style="margin-top:10px;">
+        <strong>⚡ คำนวณ NEWS2 อัตโนมัติ:</strong> กรอกสัญญาณชีพแล้วดูผล NEWS2 ด้านล่าง หรือไปที่แท็บ NEWS2 เพื่อดูรายละเอียด
+      </div>
+
+      <div class="input-row" style="margin-top:10px;">
+        <div class="score-display risk-neutral" id="vs-news2-display">
+          <div class="score-number" id="vs-news2-score">-</div>
+          <div class="score-label">NEWS2 Score</div>
+          <div class="score-interp" id="vs-news2-interp">กรอกสัญญาณชีพเพื่อคำนวณ</div>
+        </div>
+        <div>
+          <label>หมายเหตุ / Notes</label>
+          <textarea id="pt-note" style="height:90px;resize:vertical;" placeholder="บันทึกเพิ่มเติม..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="card">
+      <div class="card-header">📊 สรุปคะแนนทั้งหมด</div>
+      <div class="card-body">
+        <table style="width:100%;font-size:13.5px;border-collapse:collapse;">
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">NEWS2</td><td style="text-align:right;"><span id="sum-news2" class="badge-na">-</span></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">GCS</td><td style="text-align:right;"><span id="sum-gcs" class="badge-na">-</span></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">Barthel Index</td><td style="text-align:right;"><span id="sum-barthel" class="badge-na">-</span></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">Morse Fall Scale</td><td style="text-align:right;"><span id="sum-morse" class="badge-na">-</span></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">Braden Scale</td><td style="text-align:right;"><span id="sum-braden" class="badge-na">-</span></td></tr>
+          <tr><td style="padding:5px 0;color:var(--text-muted);font-weight:600;">MODS</td><td style="text-align:right;"><span id="sum-mods" class="badge-na">-</span></td></tr>
+          <tr style="border-top:2px solid var(--border);">
+            <td style="padding:8px 0;font-weight:700;font-size:15px;color:var(--primary);">PCS ประเภท</td>
+            <td style="text-align:right;"><span id="sum-pcs" class="badge-na" style="font-size:15px;">-</span></td>
+          </tr>
+        </table>
+        <div class="btn-group">
+          <button class="btn btn-accent btn-sm" onclick="showTab('pcs')">🏷️ ดูผล PCS</button>
+          <button class="btn btn-outline btn-sm" onclick="clearAll()">🗑️ ล้างข้อมูล</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">🚨 สัญญาณเตือน Emergency Triggers</div>
+      <div class="card-body">
+        <div id="emergency-list" style="font-size:13px;">
+          <div style="color:var(--text-muted);padding:8px 0;">ยังไม่มีข้อมูลสัญญาณชีพ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NEWS2 SECTION ===== -->
+<div id="section-news2" class="section">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div>
+      <div class="section-title">National Early Warning Score 2 (NEWS2)</div>
+      <div class="section-desc">ประเมิน 7 ตัวชี้วัดทางสรีรวิทยา — คะแนนสูง = ความเสี่ยงสูง</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header">📋 ตาราง NEWS2</div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="news2-table" id="news2-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:150px;">พารามิเตอร์</th>
+            <th style="background:#b91c1c;min-width:60px;">3</th>
+            <th style="background:#c85a1a;min-width:60px;">2</th>
+            <th style="background:#b8860b;min-width:60px;">1</th>
+            <th style="background:#1e8c5a;min-width:70px;">0</th>
+            <th style="background:#b8860b;min-width:60px;">1</th>
+            <th style="background:#c85a1a;min-width:60px;">2</th>
+            <th style="background:#b91c1c;min-width:60px;">3</th>
+            <th style="min-width:70px;">ค่าที่วัด</th>
+            <th style="min-width:50px;">คะแนน</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:left;font-weight:600;">อัตราหายใจ (RR)</td>
+            <td>≤8</td><td>-</td><td>9–11</td><td>12–20</td><td>21–24</td><td>-</td><td>≥25</td>
+            <td><input class="news2-input" type="number" id="n2-rr" placeholder="ครั้ง/นาที" oninput="calcNEWS2()"></td>
+            <td class="news2-score-cell s0" id="n2-rr-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">SpO₂ (%)</td>
+            <td>≤91</td><td>92–93</td><td>94–95</td><td>≥96</td><td>-</td><td>-</td><td>-</td>
+            <td><input class="news2-input" type="number" id="n2-spo2" placeholder="%" oninput="calcNEWS2()"></td>
+            <td class="news2-score-cell s0" id="n2-spo2-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">ออกซิเจนเสริม</td>
+            <td>-</td><td>ใช้ O₂</td><td>-</td><td>ไม่ใช้</td><td>-</td><td>-</td><td>-</td>
+            <td>
+              <select class="news2-input" id="n2-o2" onchange="calcNEWS2()" style="width:100%;">
+                <option value="no">ไม่ใช้</option>
+                <option value="yes">ใช้ O₂</option>
+              </select>
+            </td>
+            <td class="news2-score-cell s0" id="n2-o2-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">BP Systolic (mmHg)</td>
+            <td>≤90</td><td>91–100</td><td>101–110</td><td>111–219</td><td>-</td><td>-</td><td>≥220</td>
+            <td><input class="news2-input" type="number" id="n2-sbp" placeholder="mmHg" oninput="calcNEWS2()"></td>
+            <td class="news2-score-cell s0" id="n2-sbp-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">ชีพจร (HR)</td>
+            <td>≤40</td><td>-</td><td>41–50</td><td>51–90</td><td>91–110</td><td>111–130</td><td>≥131</td>
+            <td><input class="news2-input" type="number" id="n2-hr" placeholder="ครั้ง/นาที" oninput="calcNEWS2()"></td>
+            <td class="news2-score-cell s0" id="n2-hr-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">ระดับสติ (AVPU)</td>
+            <td>-</td><td>-</td><td>-</td><td>Alert</td><td>CVPU</td><td>-</td><td>-</td>
+            <td>
+              <select class="news2-input" id="n2-avpu" onchange="calcNEWS2()" style="width:100%;">
+                <option value="A">A - Alert</option>
+                <option value="C">C/V/P/U</option>
+              </select>
+            </td>
+            <td class="news2-score-cell s0" id="n2-avpu-s">-</td>
+          </tr>
+          <tr>
+            <td style="text-align:left;font-weight:600;">อุณหภูมิกาย (°C)</td>
+            <td>≤35.0</td><td>-</td><td>35.1–36.0</td><td>36.1–38.0</td><td>38.1–39.0</td><td>-</td><td>≥39.1</td>
+            <td><input class="news2-input" type="number" id="n2-temp" placeholder="°C" step="0.1" oninput="calcNEWS2()"></td>
+            <td class="news2-score-cell s0" id="n2-temp-s">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body">
+      <div class="input-row">
+        <div class="score-display risk-neutral" id="news2-display">
+          <div class="score-number" id="news2-total">-</div>
+          <div class="score-label">NEWS2 คะแนนรวม (0–20+)</div>
+          <div class="score-interp" id="news2-interp">กรอกข้อมูลเพื่อคำนวณ</div>
+        </div>
+        <div>
+          <p style="font-weight:700;margin-bottom:8px;font-size:14px;">การดำเนินการตามคะแนน NEWS2</p>
+          <table class="interp-table">
+            <tr><th>คะแนน</th><th>ระดับ</th><th>การดำเนินการ</th></tr>
+            <tr><td><span class="badge-1">0</span></td><td>ต่ำมาก</td><td>ประเมินตามรอบปกติ</td></tr>
+            <tr><td><span class="badge-1">1–4</span></td><td>ต่ำ</td><td>ประเมินทุก 4-6 ชม. แจ้งพยาบาลเวร</td></tr>
+            <tr><td><span class="badge-2">5–6</span></td><td>ปานกลาง</td><td>ประเมินทุก 1-2 ชม. แจ้งแพทย์</td></tr>
+            <tr><td><span class="badge-4">≥7</span></td><td>สูง</td><td>⚠️ แจ้งแพทย์ทันที พิจารณา Refer</td></tr>
+            <tr><td><span class="badge-4">แดง 1 ตัว</span></td><td>สูง</td><td>⚠️ แจ้งแพทย์ทันที ประเมินทุก 30 นาที</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GCS SECTION ===== -->
+<div id="section-gcs" class="section">
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <div>
+      <div class="section-title">Glasgow Coma Scale (GCS)</div>
+      <div class="section-desc">ประเมินระดับความรู้สึกตัว 3 หมวด — คะแนนรวม 3–15</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body">
+      <!-- Eye Opening -->
+      <div class="gcs-row" style="margin-bottom:12px;">
+        <div class="gcs-row-header">👁️ การลืมตา (Eye Opening) — E1–E4</div>
+        <div class="gcs-options">
+          <label class="gcs-option" onclick="selectGCS('E',4,this)">
+            <input type="radio" name="gcs-e" value="4">
+            ลืมตาเอง (Spontaneous) <span class="gcs-score-badge">4</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('E',3,this)">
+            <input type="radio" name="gcs-e" value="3">
+            ลืมตาเมื่อเรียก (To Speech) <span class="gcs-score-badge">3</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('E',2,this)">
+            <input type="radio" name="gcs-e" value="2">
+            ลืมตาเมื่อเจ็บปวด (To Pain) <span class="gcs-score-badge">2</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('E',1,this)">
+            <input type="radio" name="gcs-e" value="1">
+            ไม่ลืมตาเลย (None) <span class="gcs-score-badge">1</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Verbal -->
+      <div class="gcs-row" style="margin-bottom:12px;">
+        <div class="gcs-row-header">🗣️ การตอบสนองทางวาจา (Verbal Response) — V1–V5</div>
+        <div class="gcs-options">
+          <label class="gcs-option" onclick="selectGCS('V',5,this)">
+            <input type="radio" name="gcs-v" value="5">
+            พูดถูกต้อง รู้ตัว (Oriented) <span class="gcs-score-badge">5</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('V',4,this)">
+            <input type="radio" name="gcs-v" value="4">
+            พูดสับสน (Confused) <span class="gcs-score-badge">4</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('V',3,this)">
+            <input type="radio" name="gcs-v" value="3">
+            พูดเป็นคำๆ (Inappropriate Words) <span class="gcs-score-badge">3</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('V',2,this)">
+            <input type="radio" name="gcs-v" value="2">
+            ส่งเสียงไม่ใช่คำ (Incomprehensible Sounds) <span class="gcs-score-badge">2</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('V',1,this)">
+            <input type="radio" name="gcs-v" value="1">
+            ไม่มีเสียง (None) <span class="gcs-score-badge">1</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Motor -->
+      <div class="gcs-row">
+        <div class="gcs-row-header">💪 การเคลื่อนไหว (Motor Response) — M1–M6</div>
+        <div class="gcs-options">
+          <label class="gcs-option" onclick="selectGCS('M',6,this)">
+            <input type="radio" name="gcs-m" value="6">
+            ทำตามคำสั่ง (Obeys Commands) <span class="gcs-score-badge">6</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('M',5,this)">
+            <input type="radio" name="gcs-m" value="5">
+            เอื้อมมือตอบสนอง (Localizes Pain) <span class="gcs-score-badge">5</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('M',4,this)">
+            <input type="radio" name="gcs-m" value="4">
+            ดึงหนีความเจ็บปวด (Withdrawal) <span class="gcs-score-badge">4</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('M',3,this)">
+            <input type="radio" name="gcs-m" value="3">
+            แขนงอผิดปกติ (Abnormal Flexion) <span class="gcs-score-badge">3</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('M',2,this)">
+            <input type="radio" name="gcs-m" value="2">
+            แขนเหยียดผิดปกติ (Extension) <span class="gcs-score-badge">2</span>
+          </label>
+          <label class="gcs-option" onclick="selectGCS('M',1,this)">
+            <input type="radio" name="gcs-m" value="1">
+            ไม่มีการเคลื่อนไหว (None) <span class="gcs-score-badge">1</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="input-row triple">
+        <div class="score-display risk-neutral" id="gcs-display">
+          <div class="score-number" id="gcs-total">-</div>
+          <div class="score-label">GCS รวม (3–15)</div>
+          <div class="score-interp" id="gcs-detail">E? V? M?</div>
+        </div>
+        <div style="grid-column:span 2;">
+          <table class="interp-table">
+            <tr><th>คะแนน GCS</th><th>การแปลผล</th></tr>
+            <tr><td><span class="badge-1">13–15</span></td><td>บาดเจ็บเล็กน้อย (Mild TBI)</td></tr>
+            <tr><td><span class="badge-3">9–12</span></td><td>บาดเจ็บปานกลาง (Moderate TBI)</td></tr>
+            <tr><td><span class="badge-4">≤8</span></td><td>⚠️ บาดเจ็บรุนแรง — ดูแลทางเดินหายใจ</td></tr>
+          </table>
+          <div class="tip-box" style="margin-top:10px;">
+            <strong>⚠️ สำคัญ:</strong> หาก GCS ลดลง ≥2 คะแนนจากเดิม ถือว่าอาการแย่ลงอย่างมีนัยสำคัญ — รายงานแพทย์ทันที
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BARTHEL SECTION ===== -->
+<div id="section-barthel" class="section">
+  <div class="section-header">
+    <div class="section-icon">🦾</div>
+    <div>
+      <div class="section-title">Barthel Index</div>
+      <div class="section-desc">ประเมินความสามารถในการประกอบกิจวัตรประจำวัน (ADL) — 10 รายการ คะแนน 0–100</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body" id="barthel-items">
+
+      <!-- Item 1 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">1. การรับประทานอาหาร (Feeding)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(1,0,this)"><input type="radio" name="bi-1" value="0">ช่วยเหลือทั้งหมด <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(1,5,this)"><input type="radio" name="bi-1" value="5">ช่วยเหลือบางส่วน <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(1,10,this)"><input type="radio" name="bi-1" value="10">ทำได้เอง <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">2. การอาบน้ำ (Bathing)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(2,0,this)"><input type="radio" name="bi-2" value="0">ต้องการความช่วยเหลือ <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(2,5,this)"><input type="radio" name="bi-2" value="5">ทำได้เอง <span class="barthel-score-badge">5</span></label>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">3. การดูแลรูปลักษณ์ (Personal Grooming)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(3,0,this)"><input type="radio" name="bi-3" value="0">ต้องการความช่วยเหลือ <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(3,5,this)"><input type="radio" name="bi-3" value="5">ทำได้เอง (หวีผม แปรงฟัน) <span class="barthel-score-badge">5</span></label>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">4. การสวมใส่เสื้อผ้า (Dressing)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(4,0,this)"><input type="radio" name="bi-4" value="0">ต้องการความช่วยเหลือ <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(4,5,this)"><input type="radio" name="bi-4" value="5">ช่วยเหลือบางส่วน <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(4,10,this)"><input type="radio" name="bi-4" value="10">ทำได้เอง (รวมกระดุม ซิป) <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">5. การขับถ่ายอุจจาระ (Bowel Control)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(5,0,this)"><input type="radio" name="bi-5" value="0">กลั้นไม่ได้ / ต้องสวน <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(5,5,this)"><input type="radio" name="bi-5" value="5">กลั้นได้บางครั้ง <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(5,10,this)"><input type="radio" name="bi-5" value="10">กลั้นได้ปกติ <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">6. การขับถ่ายปัสสาวะ (Bladder Control)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(6,0,this)"><input type="radio" name="bi-6" value="0">กลั้นไม่ได้ / ใส่สายสวน <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(6,5,this)"><input type="radio" name="bi-6" value="5">กลั้นได้บางครั้ง <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(6,10,this)"><input type="radio" name="bi-6" value="10">กลั้นได้ปกติ <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+      <!-- Item 7 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">7. การใช้ห้องน้ำ (Toilet Use)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(7,0,this)"><input type="radio" name="bi-7" value="0">ต้องการความช่วยเหลือทั้งหมด <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(7,5,this)"><input type="radio" name="bi-7" value="5">ช่วยเหลือบางส่วน <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(7,10,this)"><input type="radio" name="bi-7" value="10">ทำได้เอง <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+      <!-- Item 8 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">8. การเคลื่อนที่จากเตียงไปเก้าอี้ (Transfer)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(8,0,this)"><input type="radio" name="bi-8" value="0">ทำไม่ได้ ต้องพลิกตะแคง <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(8,5,this)"><input type="radio" name="bi-8" value="5">ต้องช่วยมาก (1-2 คน) <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(8,10,this)"><input type="radio" name="bi-8" value="10">ต้องช่วยเล็กน้อย <span class="barthel-score-badge">10</span></label>
+          <label class="barthel-option" onclick="selectBarthel(8,15,this)"><input type="radio" name="bi-8" value="15">ทำได้เอง <span class="barthel-score-badge">15</span></label>
+        </div>
+      </div>
+
+      <!-- Item 9 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">9. การเดิน (Mobility)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(9,0,this)"><input type="radio" name="bi-9" value="0">เดินไม่ได้ <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(9,5,this)"><input type="radio" name="bi-9" value="5">ใช้รถเข็น ≥45 ม. <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(9,10,this)"><input type="radio" name="bi-9" value="10">เดินด้วยความช่วยเหลือ ≥45 ม. <span class="barthel-score-badge">10</span></label>
+          <label class="barthel-option" onclick="selectBarthel(9,15,this)"><input type="radio" name="bi-9" value="15">เดินได้เอง ≥45 ม. <span class="barthel-score-badge">15</span></label>
+        </div>
+      </div>
+
+      <!-- Item 10 -->
+      <div class="barthel-item">
+        <div class="barthel-item-header">10. การขึ้นลงบันได (Stairs)</div>
+        <div class="barthel-options">
+          <label class="barthel-option" onclick="selectBarthel(10,0,this)"><input type="radio" name="bi-10" value="0">ทำไม่ได้ <span class="barthel-score-badge">0</span></label>
+          <label class="barthel-option" onclick="selectBarthel(10,5,this)"><input type="radio" name="bi-10" value="5">ต้องการความช่วยเหลือ <span class="barthel-score-badge">5</span></label>
+          <label class="barthel-option" onclick="selectBarthel(10,10,this)"><input type="radio" name="bi-10" value="10">ขึ้นลงได้เอง <span class="barthel-score-badge">10</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="input-row">
+        <div class="score-display risk-neutral" id="barthel-display">
+          <div class="score-number" id="barthel-total">-</div>
+          <div class="score-label">Barthel Index (0–100)</div>
+          <div class="score-interp" id="barthel-interp">เลือกรายการให้ครบ</div>
+        </div>
+        <div>
+          <table class="interp-table">
+            <tr><th>คะแนน</th><th>ระดับการพึ่งพิง</th></tr>
+            <tr><td><span class="badge-1">91–100</span></td><td>ช่วยตัวเองได้ดี (Minimal dependence)</td></tr>
+            <tr><td><span class="badge-2">61–90</span></td><td>พึ่งพาบางส่วน (Mild dependence)</td></tr>
+            <tr><td><span class="badge-3">21–60</span></td><td>พึ่งพาปานกลาง (Moderate dependence)</td></tr>
+            <tr><td><span class="badge-4">1–20</span></td><td>พึ่งพามาก (Severe dependence)</td></tr>
+            <tr><td><span class="badge-4">0</span></td><td>พึ่งพาทั้งหมด (Total dependence)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MORSE SECTION ===== -->
+<div id="section-morse" class="section">
+  <div class="section-header">
+    <div class="section-icon">⚠️</div>
+    <div>
+      <div class="section-title">Morse Fall Scale (MFS)</div>
+      <div class="section-desc">ประเมินความเสี่ยงต่อการล้มหกล้ม — 6 ข้อ คะแนน 0–125</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body">
+
+      <div class="morse-item">
+        <div class="morse-item-header">1. ประวัติการหกล้มใน 3 เดือนที่ผ่านมา</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(1,0,this)"><input type="radio" name="mf-1" value="0"><span style="flex:1;">ไม่มี</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(1,25,this)"><input type="radio" name="mf-1" value="25"><span style="flex:1;">มีประวัติล้มหกล้ม</span><span class="morse-score-pill">25</span></label>
+        </div>
+      </div>
+
+      <div class="morse-item">
+        <div class="morse-item-header">2. การวินิจฉัยโรคมากกว่า 1 โรค</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(2,0,this)"><input type="radio" name="mf-2" value="0"><span style="flex:1;">ไม่มี (โรคเดียว)</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(2,15,this)"><input type="radio" name="mf-2" value="15"><span style="flex:1;">มี (มากกว่า 1 โรค)</span><span class="morse-score-pill">15</span></label>
+        </div>
+      </div>
+
+      <div class="morse-item">
+        <div class="morse-item-header">3. การใช้อุปกรณ์ช่วยเดิน</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(3,0,this)"><input type="radio" name="mf-3" value="0"><span style="flex:1;">ไม่ต้องการ / นอนพัก / Wheelchair / พยาบาลช่วย</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(3,15,this)"><input type="radio" name="mf-3" value="15"><span style="flex:1;">ใช้ไม้เท้า ไม้ค้ำ Walker</span><span class="morse-score-pill">15</span></label>
+          <label class="morse-option" onclick="selectMorse(3,30,this)"><input type="radio" name="mf-3" value="30"><span style="flex:1;">เกาะจับเฟอร์นิเจอร์</span><span class="morse-score-pill">30</span></label>
+        </div>
+      </div>
+
+      <div class="morse-item">
+        <div class="morse-item-header">4. ได้รับสารน้ำ IV / Heparin Lock</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(4,0,this)"><input type="radio" name="mf-4" value="0"><span style="flex:1;">ไม่มี</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(4,20,this)"><input type="radio" name="mf-4" value="20"><span style="flex:1;">มีสาย IV / Heparin Lock</span><span class="morse-score-pill">20</span></label>
+        </div>
+      </div>
+
+      <div class="morse-item">
+        <div class="morse-item-header">5. ลักษณะการเดิน / การทรงตัว</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(5,0,this)"><input type="radio" name="mf-5" value="0"><span style="flex:1;">ปกติ / นอนพัก / ไม่เคลื่อนที่</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(5,10,this)"><input type="radio" name="mf-5" value="10"><span style="flex:1;">อ่อนแรง (Weak)</span><span class="morse-score-pill">10</span></label>
+          <label class="morse-option" onclick="selectMorse(5,20,this)"><input type="radio" name="mf-5" value="20"><span style="flex:1;">บกพร่อง (Impaired)</span><span class="morse-score-pill">20</span></label>
+        </div>
+      </div>
+
+      <div class="morse-item">
+        <div class="morse-item-header">6. สภาวะจิตใจ</div>
+        <div class="morse-options">
+          <label class="morse-option" onclick="selectMorse(6,0,this)"><input type="radio" name="mf-6" value="0"><span style="flex:1;">รับรู้ความสามารถตนเองตามจริง</span><span class="morse-score-pill">0</span></label>
+          <label class="morse-option" onclick="selectMorse(6,15,this)"><input type="radio" name="mf-6" value="15"><span style="flex:1;">ประเมินความสามารถสูงเกินจริง / หลงลืม</span><span class="morse-score-pill">15</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="input-row">
+        <div class="score-display risk-neutral" id="morse-display">
+          <div class="score-number" id="morse-total">-</div>
+          <div class="score-label">Morse Fall Scale (0–125)</div>
+          <div class="score-interp" id="morse-interp">เลือกรายการให้ครบ</div>
+        </div>
+        <div>
+          <table class="interp-table">
+            <tr><th>คะแนน</th><th>ระดับ</th><th>การดำเนินการ</th></tr>
+            <tr><td><span class="badge-1">0–24</span></td><td>ความเสี่ยงต่ำ</td><td>ดูแลตามปกติ</td></tr>
+            <tr><td><span class="badge-2">25–50</span></td><td>ปานกลาง</td><td>ราวกั้นเตียง สัญญาณเตือน</td></tr>
+            <tr><td><span class="badge-4">≥51</span></td><td>ความเสี่ยงสูง</td><td>⚠️ มาตรการสูงสุด + Bed alarm</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BRADEN SECTION ===== -->
+<div id="section-braden" class="section">
+  <div class="section-header">
+    <div class="section-icon">🛏️</div>
+    <div>
+      <div class="section-title">Braden Scale</div>
+      <div class="section-desc">ประเมินความเสี่ยงต่อการเกิดแผลกดทับ — 6 มิติ คะแนน 6–23</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body">
+
+      <!-- Sensory -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>1. การรับรู้ความรู้สึก (Sensory Perception)</span><span id="bd-1-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(1,1,this)"><input type="radio" name="bd-1" value="1"><div class="braden-num">1</div>ไม่มีการรับรู้เลย</label>
+          <label class="braden-option" onclick="selectBraden(1,2,this)"><input type="radio" name="bd-1" value="2"><div class="braden-num">2</div>รับรู้ได้น้อยมาก</label>
+          <label class="braden-option" onclick="selectBraden(1,3,this)"><input type="radio" name="bd-1" value="3"><div class="braden-num">3</div>รับรู้ได้เล็กน้อย</label>
+          <label class="braden-option" onclick="selectBraden(1,4,this)"><input type="radio" name="bd-1" value="4"><div class="braden-num">4</div>รับรู้ได้ตามปกติ</label>
+        </div>
+      </div>
+
+      <!-- Moisture -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>2. ความชื้น (Moisture)</span><span id="bd-2-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(2,1,this)"><input type="radio" name="bd-2" value="1"><div class="braden-num">1</div>เปียกชื้นตลอดเวลา</label>
+          <label class="braden-option" onclick="selectBraden(2,2,this)"><input type="radio" name="bd-2" value="2"><div class="braden-num">2</div>เปียกชื้นมาก</label>
+          <label class="braden-option" onclick="selectBraden(2,3,this)"><input type="radio" name="bd-2" value="3"><div class="braden-num">3</div>เปียกชื้นบางครั้ง</label>
+          <label class="braden-option" onclick="selectBraden(2,4,this)"><input type="radio" name="bd-2" value="4"><div class="braden-num">4</div>แห้งอยู่เสมอ</label>
+        </div>
+      </div>
+
+      <!-- Activity -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>3. การเคลื่อนไหวร่างกาย (Activity)</span><span id="bd-3-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(3,1,this)"><input type="radio" name="bd-3" value="1"><div class="braden-num">1</div>นอนอยู่กับเตียงตลอด</label>
+          <label class="braden-option" onclick="selectBraden(3,2,this)"><input type="radio" name="bd-3" value="2"><div class="braden-num">2</div>นั่งได้แต่เดินไม่ได้</label>
+          <label class="braden-option" onclick="selectBraden(3,3,this)"><input type="radio" name="bd-3" value="3"><div class="braden-num">3</div>เดินได้เป็นครั้งคราว</label>
+          <label class="braden-option" onclick="selectBraden(3,4,this)"><input type="radio" name="bd-3" value="4"><div class="braden-num">4</div>เดินได้บ่อย (≥2 ครั้ง/วัน)</label>
+        </div>
+      </div>
+
+      <!-- Mobility -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>4. ความสามารถในการขยับตัว (Mobility)</span><span id="bd-4-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(4,1,this)"><input type="radio" name="bd-4" value="1"><div class="braden-num">1</div>เคลื่อนไหวไม่ได้เลย</label>
+          <label class="braden-option" onclick="selectBraden(4,2,this)"><input type="radio" name="bd-4" value="2"><div class="braden-num">2</div>เคลื่อนไหวได้น้อยมาก</label>
+          <label class="braden-option" onclick="selectBraden(4,3,this)"><input type="radio" name="bd-4" value="3"><div class="braden-num">3</div>เคลื่อนไหวได้เล็กน้อย</label>
+          <label class="braden-option" onclick="selectBraden(4,4,this)"><input type="radio" name="bd-4" value="4"><div class="braden-num">4</div>เคลื่อนไหวได้ไม่จำกัด</label>
+        </div>
+      </div>
+
+      <!-- Nutrition -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>5. โภชนาการ (Nutrition)</span><span id="bd-5-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(5,1,this)"><input type="radio" name="bd-5" value="1"><div class="braden-num">1</div>รับประทานน้อยมาก (&lt;1/3 มื้อ)</label>
+          <label class="braden-option" onclick="selectBraden(5,2,this)"><input type="radio" name="bd-5" value="2"><div class="braden-num">2</div>รับประทานน้อย (~1/2 มื้อ)</label>
+          <label class="braden-option" onclick="selectBraden(5,3,this)"><input type="radio" name="bd-5" value="3"><div class="braden-num">3</div>รับประทานพอเพียง (&gt;1/2 มื้อ)</label>
+          <label class="braden-option" onclick="selectBraden(5,4,this)"><input type="radio" name="bd-5" value="4"><div class="braden-num">4</div>รับประทานได้ดี (หมดทุกมื้อ)</label>
+        </div>
+      </div>
+
+      <!-- Friction & Shear -->
+      <div class="braden-domain">
+        <div class="braden-domain-header"><span>6. แรงเสียดทานและแรงเฉือน (Friction &amp; Shear)</span><span id="bd-6-s" style="font-size:14px;color:var(--primary);">-</span></div>
+        <div class="braden-options">
+          <label class="braden-option" onclick="selectBraden(6,1,this)"><input type="radio" name="bd-6" value="1"><div class="braden-num">1</div>มีปัญหามาก (ต้องช่วยพลิกตัว เสียดสีผิว)</label>
+          <label class="braden-option" onclick="selectBraden(6,2,this)"><input type="radio" name="bd-6" value="2"><div class="braden-num">2</div>มีปัญหาบางส่วน (ขยับตัวได้บ้าง)</label>
+          <label class="braden-option" onclick="selectBraden(6,3,this)"><input type="radio" name="bd-6" value="3"><div class="braden-num">3</div>ไม่มีปัญหา (ขยับตัวได้ดี ไม่เสียดสี)</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="input-row">
+        <div class="score-display risk-neutral" id="braden-display">
+          <div class="score-number" id="braden-total">-</div>
+          <div class="score-label">Braden Scale (6–23)</div>
+          <div class="score-interp" id="braden-interp">เลือกรายการให้ครบ</div>
+        </div>
+        <div>
+          <table class="interp-table">
+            <tr><th>คะแนน</th><th>ระดับ</th><th>การดำเนินการ</th></tr>
+            <tr><td><span class="badge-1">19–23</span></td><td>ไม่มีความเสี่ยง</td><td>ดูแลผิวตามปกติ</td></tr>
+            <tr><td><span class="badge-2">15–18</span></td><td>เสี่ยงต่ำ</td><td>พลิกตะแคงทุก 2 ชม.</td></tr>
+            <tr><td><span class="badge-3">13–14</span></td><td>เสี่ยงปานกลาง</td><td>แผ่นรองลม/โฟม</td></tr>
+            <tr><td><span class="badge-4">10–12</span></td><td>เสี่ยงสูง</td><td>ที่นอนลม ดูแลโภชนาการ</td></tr>
+            <tr><td><span class="badge-4">≤9</span></td><td>เสี่ยงสูงมาก</td><td>⚠️ ที่นอนแรงดันต่ำ กลุ่มดูแลแผลโดยเฉพาะ</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODS SECTION ===== -->
+<div id="section-mods" class="section">
+  <div class="section-header">
+    <div class="section-icon">🫁</div>
+    <div>
+      <div class="section-title">Multiple Organ Dysfunction Score (MODS)</div>
+      <div class="section-desc">ประเมินความรุนแรงของภาวะอวัยวะล้มเหลวหลายระบบ — 6 ระบบ คะแนน 0–24</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="mods-table" style="min-width:600px;">
+        <thead>
+          <tr>
+            <th style="min-width:200px;">ระบบอวัยวะ</th>
+            <th style="min-width:200px;">ค่าที่วัด / เกณฑ์</th>
+            <th style="min-width:80px;">คะแนน</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ระบบหายใจ (Respiratory)</strong><br><small style="color:var(--text-muted);">PaO₂/FiO₂ ratio</small></td>
+            <td>
+              <select class="mods-select" id="mods-resp" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">&gt;300 (SpO₂/FiO₂ &gt;315)</option>
+                <option value="1">226–300 (SpO₂/FiO₂ 236–315)</option>
+                <option value="2">151–225 (SpO₂/FiO₂ 142–235)</option>
+                <option value="3">76–150 (SpO₂/FiO₂ 70–141)</option>
+                <option value="4">≤75 (SpO₂/FiO₂ &lt;70)</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-resp-s">-</td>
+          </tr>
+          <tr>
+            <td><strong>ระบบไต (Renal)</strong><br><small style="color:var(--text-muted);">Creatinine (µmol/L)</small></td>
+            <td>
+              <select class="mods-select" id="mods-renal" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">≤100</option>
+                <option value="1">101–200</option>
+                <option value="2">201–350</option>
+                <option value="3">351–500</option>
+                <option value="4">&gt;500</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-renal-s">-</td>
+          </tr>
+          <tr>
+            <td><strong>ระบบตับ (Hepatic)</strong><br><small style="color:var(--text-muted);">Bilirubin (µmol/L)</small></td>
+            <td>
+              <select class="mods-select" id="mods-liver" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">≤20</option>
+                <option value="1">21–60</option>
+                <option value="2">61–120</option>
+                <option value="3">121–240</option>
+                <option value="4">&gt;240</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-liver-s">-</td>
+          </tr>
+          <tr>
+            <td><strong>ระบบหัวใจและหลอดเลือด</strong><br><small style="color:var(--text-muted);">PAR = HR × CVP / MAP</small></td>
+            <td>
+              <select class="mods-select" id="mods-cardio" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">≤10</option>
+                <option value="1">10.1–15</option>
+                <option value="2">15.1–20</option>
+                <option value="3">20.1–30</option>
+                <option value="4">&gt;30</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-cardio-s">-</td>
+          </tr>
+          <tr>
+            <td><strong>ระบบประสาท (CNS)</strong><br><small style="color:var(--text-muted);">Glasgow Coma Score</small></td>
+            <td>
+              <select class="mods-select" id="mods-cns" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">15 (ปกติ)</option>
+                <option value="1">13–14</option>
+                <option value="2">10–12</option>
+                <option value="3">7–9</option>
+                <option value="4">≤6</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-cns-s">-</td>
+          </tr>
+          <tr>
+            <td><strong>ระบบโลหิต (Hematologic)</strong><br><small style="color:var(--text-muted);">เกล็ดเลือด (×10³/mm³)</small></td>
+            <td>
+              <select class="mods-select" id="mods-hema" onchange="calcMODS()">
+                <option value="">-- เลือก --</option>
+                <option value="0">&gt;120</option>
+                <option value="1">81–120</option>
+                <option value="2">51–80</option>
+                <option value="3">21–50</option>
+                <option value="4">≤20</option>
+              </select>
+            </td>
+            <td style="text-align:center;font-weight:700;font-size:18px;color:var(--primary);" id="mods-hema-s">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="input-row">
+        <div class="score-display risk-neutral" id="mods-display">
+          <div class="score-number" id="mods-total">-</div>
+          <div class="score-label">MODS Score (0–24)</div>
+          <div class="score-interp" id="mods-interp">เลือกรายการให้ครบ</div>
+        </div>
+        <div>
+          <table class="interp-table">
+            <tr><th>คะแนน</th><th>ระดับ</th><th>การดำเนินการ</th></tr>
+            <tr><td><span class="badge-1">0–4</span></td><td>ปกติ/เล็กน้อย</td><td>เฝ้าระวังตามปกติ</td></tr>
+            <tr><td><span class="badge-2">5–8</span></td><td>ปานกลาง</td><td>เพิ่มการติดตาม ปรึกษาผู้เชี่ยวชาญ</td></tr>
+            <tr><td><span class="badge-4">9–12</span></td><td>รุนแรง</td><td>⚠️ พิจารณาส่งต่อ ICU</td></tr>
+            <tr><td><span class="badge-5">≥13</span></td><td>รุนแรงมาก</td><td>🚨 อัตราเสียชีวิตสูง Refer ด่วน</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PCS SECTION ===== -->
+<div id="section-pcs" class="section">
+  <div class="section-header">
+    <div class="section-icon">🏷️</div>
+    <div>
+      <div class="section-title">Patient Classification System (PCS)</div>
+      <div class="section-desc">ประเมิน 5 ด้าน ด้านละ 1–5 คะแนน — รวม 5–25 คะแนน</div>
+    </div>
+  </div>
+
+  <div class="pcs-result-card" id="pcs-main-result">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.8px;text-transform:uppercase;">ประเภทผู้ป่วย (PCS Level)</div>
+        <div class="pcs-big" id="pcs-level-num">-</div>
+        <div style="font-size:15px;font-weight:700;color:var(--primary);margin-top:2px;" id="pcs-level-name">ยังไม่ได้ประเมิน</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:2px;" id="pcs-nhppd">-</div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div class="pcs-level-bar">
+          <div class="pcs-level-seg" id="pcs-bar-1"></div>
+          <div class="pcs-level-seg" id="pcs-bar-2"></div>
+          <div class="pcs-level-seg" id="pcs-bar-3"></div>
+          <div class="pcs-level-seg" id="pcs-bar-4"></div>
+          <div class="pcs-level-seg" id="pcs-bar-5"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);font-weight:600;margin-top:2px;">
+          <span>1 Minimal</span><span>2 Moderate</span><span>3 Total</span><span>4 Intensive</span><span>5 Highly</span>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:4px;">คะแนนรวม PCS Tool</div>
+          <div style="font-size:32px;font-weight:700;color:var(--primary);" id="pcs-score-sum">-</div>
+          <div style="font-size:12px;color:var(--text-muted);">จากคะแนนเต็ม 25 คะแนน</div>
+        </div>
+      </div>
+    </div>
+    <div class="pcs-score-grid" id="pcs-domain-display">
+      <div class="pcs-domain-score"><div class="ds-num" id="pd-1">-</div><div class="ds-label">สัญญาณชีพ</div></div>
+      <div class="pcs-domain-score"><div class="ds-num" id="pd-2">-</div><div class="ds-label">ระดับสติ</div></div>
+      <div class="pcs-domain-score"><div class="ds-num" id="pd-3">-</div><div class="ds-label">ADL</div></div>
+      <div class="pcs-domain-score"><div class="ds-num" id="pd-4">-</div><div class="ds-label">หัตถการ</div></div>
+      <div class="pcs-domain-score"><div class="ds-num" id="pd-5">-</div><div class="ds-label">ความเสี่ยง</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header">📝 ประเมิน 5 ด้าน PCS Tool</div>
+    <div class="card-body">
+
+      <!-- Domain 1 -->
+      <div class="assess-section">
+        <div class="assess-title">ด้านที่ 1 — สัญญาณชีพ (Vital Signs)</div>
+        <div class="assess-item" onclick="selectPCS(1,1,this)">
+          <input type="radio" name="pcs-1" value="1">
+          <div class="assess-item-score">1</div>
+          <div class="assess-item-text"><strong>คงที่และปกติทุกอย่าง</strong> — T 36.5–37.4°C, P 60–100, RR 12–20, BP 90–140/60–90, SpO₂ ≥95%</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(1,2,this)">
+          <input type="radio" name="pcs-1" value="2">
+          <div class="assess-item-score">2</div>
+          <div class="assess-item-text"><strong>คงที่แต่ผิดปกติเล็กน้อย</strong> — 1–2 ตัวชี้วัดผิดปกติ ยังไม่ต้องเฝ้าระวังเพิ่ม</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(1,3,this)">
+          <input type="radio" name="pcs-1" value="3">
+          <div class="assess-item-score">3</div>
+          <div class="assess-item-text"><strong>ผิดปกติ ≥2 ตัวชี้วัด</strong> — ต้องติดตามทุก 2–4 ชม. (NEWS ระดับกลาง)</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(1,4,this)">
+          <input type="radio" name="pcs-1" value="4">
+          <div class="assess-item-score">4</div>
+          <div class="assess-item-text"><strong>ผิดปกติมาก</strong> — ต้องติดตามทุก 1 ชม. (NEWS ≥5 หรือมีตัวชี้วัดสีแดง 1 ตัว)</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(1,5,this)">
+          <input type="radio" name="pcs-1" value="5">
+          <div class="assess-item-score">5</div>
+          <div class="assess-item-text"><strong>ไม่คงที่ ภาวะวิกฤต</strong> — ความดันต่ำรุนแรง หัวใจเต้นผิดจังหวะ ระบบหายใจล้มเหลว (NEWS ≥7)</div>
+        </div>
+      </div>
+
+      <!-- Domain 2 -->
+      <div class="assess-section">
+        <div class="assess-title">ด้านที่ 2 — ระดับความรู้สึกตัว (Consciousness: AVPU/GCS)</div>
+        <div class="assess-item" onclick="selectPCS(2,1,this)">
+          <input type="radio" name="pcs-2" value="1">
+          <div class="assess-item-score">1</div>
+          <div class="assess-item-text"><strong>รู้สึกตัวดี (Alert)</strong> — ตอบสนองถูกต้อง ไม่มีอาการสับสน GCS 15</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(2,2,this)">
+          <input type="radio" name="pcs-2" value="2">
+          <div class="assess-item-score">2</div>
+          <div class="assess-item-text"><strong>รู้สึกตัวดีแต่สับสนเล็กน้อย</strong> — GCS 13–14 ตอบสนองต่อเสียงได้ดี</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(2,3,this)">
+          <input type="radio" name="pcs-2" value="3">
+          <div class="assess-item-score">3</div>
+          <div class="assess-item-text"><strong>ซึม สับสน (Confused/Drowsy)</strong> — ตอบสนองต่อเสียง GCS 10–12 เสี่ยงล้มหกล้ม</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(2,4,this)">
+          <input type="radio" name="pcs-2" value="4">
+          <div class="assess-item-score">4</div>
+          <div class="assess-item-text"><strong>ซึมมาก ตอบสนองต่อการกระตุ้น (Stupor)</strong> — GCS 7–9 เสี่ยงสำลัก</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(2,5,this)">
+          <input type="radio" name="pcs-2" value="5">
+          <div class="assess-item-score">5</div>
+          <div class="assess-item-text"><strong>ไม่รู้สึกตัว (Unconscious/Coma)</strong> — GCS ≤6 ต้องเฝ้าดูแลทางเดินหายใจอย่างต่อเนื่อง</div>
+        </div>
+      </div>
+
+      <!-- Domain 3 -->
+      <div class="assess-section">
+        <div class="assess-title">ด้านที่ 3 — ความสามารถในการช่วยเหลือตนเอง (ADL – Barthel Index)</div>
+        <div class="assess-item" onclick="selectPCS(3,1,this)">
+          <input type="radio" name="pcs-3" value="1">
+          <div class="assess-item-score">1</div>
+          <div class="assess-item-text"><strong>ช่วยเหลือตัวเองได้ทุกอย่าง</strong> — Barthel 91–100</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(3,2,this)">
+          <input type="radio" name="pcs-3" value="2">
+          <div class="assess-item-score">2</div>
+          <div class="assess-item-text"><strong>ต้องการความช่วยเหลือเล็กน้อย</strong> — Barthel 61–90 (อาบน้ำหรือสวมใส่เสื้อผ้า)</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(3,3,this)">
+          <input type="radio" name="pcs-3" value="3">
+          <div class="assess-item-score">3</div>
+          <div class="assess-item-text"><strong>ช่วยเหลือตนเองได้น้อย</strong> — Barthel 21–60 ต้องการความช่วยเหลือมาก</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(3,4,this)">
+          <input type="radio" name="pcs-3" value="4">
+          <div class="assess-item-score">4</div>
+          <div class="assess-item-text"><strong>ช่วยเหลือตนเองได้น้อยมาก</strong> — Barthel 1–20 พึ่งพิงเกือบทั้งหมด</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(3,5,this)">
+          <input type="radio" name="pcs-3" value="5">
+          <div class="assess-item-score">5</div>
+          <div class="assess-item-text"><strong>ช่วยเหลือตนเองไม่ได้เลย</strong> — Barthel 0 ต้องพึ่งพา 100%</div>
+        </div>
+      </div>
+
+      <!-- Domain 4 -->
+      <div class="assess-section">
+        <div class="assess-title">ด้านที่ 4 — การรักษาพยาบาลและหัตถการ</div>
+        <div class="assess-item" onclick="selectPCS(4,1,this)">
+          <input type="radio" name="pcs-4" value="1">
+          <div class="assess-item-score">1</div>
+          <div class="assess-item-text"><strong>รับประทานยาเท่านั้น</strong> — ไม่มีหัตถการเพิ่มเติม ไม่มีสาย IV</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(4,2,this)">
+          <input type="radio" name="pcs-4" value="2">
+          <div class="assess-item-score">2</div>
+          <div class="assess-item-text"><strong>ให้สารน้ำ IV ยาฉีด ทำแผลทั่วไป</strong> — หรือมีสาย Peripheral IV line</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(4,3,this)">
+          <input type="radio" name="pcs-4" value="3">
+          <div class="assess-item-score">3</div>
+          <div class="assess-item-text"><strong>มีสายสวนปัสสาวะ NG Tube Drain O₂</strong> — หรืออุปกรณ์เสริม ≥1 ชนิด</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(4,4,this)">
+          <input type="radio" name="pcs-4" value="4">
+          <div class="assess-item-score">4</div>
+          <div class="assess-item-text"><strong>หัตถการซับซ้อน</strong> — Central line, Chest drain, PCA pump, ยาหยด Vasoactive</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(4,5,this)">
+          <input type="radio" name="pcs-4" value="5">
+          <div class="assess-item-score">5</div>
+          <div class="assess-item-text"><strong>อุปกรณ์ช่วยชีวิตขั้นสูง</strong> — Ventilator, CRRT, IABP</div>
+        </div>
+      </div>
+
+      <!-- Domain 5 -->
+      <div class="assess-section">
+        <div class="assess-title">ด้านที่ 5 — ความเสี่ยงและภาวะแทรกซ้อน</div>
+        <div class="assess-item" onclick="selectPCS(5,1,this)">
+          <input type="radio" name="pcs-5" value="1">
+          <div class="assess-item-score">1</div>
+          <div class="assess-item-text"><strong>ความเสี่ยงต่ำ</strong> — ไม่มีปัจจัยเสี่ยงเฉพาะ ไม่มีประวัติล้มหกล้มหรือแผลกดทับ</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(5,2,this)">
+          <input type="radio" name="pcs-5" value="2">
+          <div class="assess-item-score">2</div>
+          <div class="assess-item-text"><strong>เสี่ยงล้มหกล้ม</strong> — Morse ≥25 หรือ Braden ≤18 (เสี่ยงแผลกดทับต่ำ–ปานกลาง)</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(5,3,this)">
+          <input type="radio" name="pcs-5" value="3">
+          <div class="assess-item-score">3</div>
+          <div class="assess-item-text"><strong>มีความเสี่ยงหลายด้าน</strong> — ติดเชื้อ/ไข้ ระดับน้ำตาลผันผวน Braden ≤14 หรือ Morse ≥51</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(5,4,this)">
+          <input type="radio" name="pcs-5" value="4">
+          <div class="assess-item-score">4</div>
+          <div class="assess-item-text"><strong>ภาวะแทรกซ้อนที่ต้องติดตามใกล้ชิด</strong> — Sepsis ระยะแรก, DVT, Delirium รุนแรง</div>
+        </div>
+        <div class="assess-item" onclick="selectPCS(5,5,this)">
+          <input type="radio" name="pcs-5" value="5">
+          <div class="assess-item-score">5</div>
+          <div class="assess-item-text"><strong>ภาวะคุกคามชีวิต</strong> — Septic shock, MODS, หัวใจหยุดเต้น ภาวะฉุกเฉินเฉียบพลัน</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PCS Interpretation Table -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header">📊 ตารางแปลผล PCS Score</div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="interp-table" style="font-size:14px;">
+        <tr>
+          <th>คะแนนรวม</th>
+          <th>ประเภท</th>
+          <th>ชื่อประเภท</th>
+          <th>ชั่วโมงพยาบาล/วัน</th>
+          <th>ระดับความเร่งด่วน</th>
+        </tr>
+        <tr><td><span class="badge-1">5–11</span></td><td><strong>1</strong></td><td>Minimal Care</td><td>1.5 ชม./วัน</td><td>🟢 ปกติ</td></tr>
+        <tr><td><span class="badge-2">12–15</span></td><td><strong>2</strong></td><td>Moderate Care</td><td>3.5 ชม./วัน</td><td>🟡 เฝ้าระวัง</td></tr>
+        <tr><td><span class="badge-3">16–20</span></td><td><strong>3</strong></td><td>Total Care / Semi-Critical</td><td>5.5 ชม./วัน</td><td>🟠 ใกล้ชิด</td></tr>
+        <tr><td><span class="badge-4">21–23</span></td><td><strong>4</strong></td><td>Intensive Care / Critical</td><td>7.5 ชม./วัน</td><td>🔴 วิกฤต</td></tr>
+        <tr><td><span class="badge-5">24–25</span></td><td><strong>5</strong></td><td>Highly Intensive Care</td><td>&gt;10 ชม./วัน</td><td>🟣 วิกฤตสูงสุด</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Action Box -->
+  <div id="pcs-action-box" class="action-box" style="background:var(--bg);border:1px solid var(--border);display:none;">
+    <strong id="pcs-action-title" style="font-size:15px;"></strong>
+    <div id="pcs-action-content" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
+    <button class="btn btn-outline" onclick="clearAll()">🗑️ ล้างข้อมูลทั้งหมด</button>
+  </div>
+</div>
+
+</main>
+
+<!-- Floating Summary -->
+<div class="floating-summary" onclick="showTab('pcs')" title="คลิกเพื่อดูผล PCS">
+  <div class="floating-summary-title">📊 คะแนนรวมปัจจุบัน</div>
+  <div class="floating-scores">
+    <div class="float-score-item"><div class="float-score-val" id="f-news2">-</div><div class="float-score-lbl">NEWS2</div></div>
+    <div class="float-score-item"><div class="float-score-val" id="f-gcs">-</div><div class="float-score-lbl">GCS</div></div>
+    <div class="float-score-item"><div class="float-score-val" id="f-barthel">-</div><div class="float-score-lbl">BI</div></div>
+    <div class="float-score-item"><div class="float-score-val" id="f-morse">-</div><div class="float-score-lbl">MFS</div></div>
+    <div class="float-score-item"><div class="float-score-val" id="f-braden">-</div><div class="float-score-lbl">BRS</div></div>
+  </div>
+  <div class="float-pcs">
+    <div class="float-pcs-num" id="f-pcs-level">-</div>
+    <div class="float-pcs-label">PCS Level<br><span id="f-pcs-name" style="opacity:0.7;font-size:10px;">ยังไม่ได้ประเมิน</span></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-ksk">KSK : <span>ความรอบรู้</span> &nbsp;·&nbsp; <span>คู่มาตรฐาน</span> &nbsp;·&nbsp; <span>บริการด้วยใจ</span></div>
+  <div>โรงพยาบาลเขาสุกิม ตำบลเขาบายศรี อำเภอท่าใหม่ จังหวัดจันทบุรี</div>
+  <div class="footer-sub">ระเบียบปฏิบัติ WI-NUR-IPD-001 ฉบับที่ A &nbsp;|&nbsp; 30 มิถุนายน 2569 &nbsp;|&nbsp; งานการพยาบาลผู้ป่วยใน</div>
+</footer>
+
+<script>
+// ===== STATE =====
+const state = {
+  news2: null, gcs: { E: null, V: null, M: null },
+  barthel: {}, morse: {}, braden: {}, mods: null,
+  pcs: { d1: null, d2: null, d3: null, d4: null, d5: null }
+};
+
+// ===== TAB NAVIGATION =====
+function showTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  const tabs = ['patient','news2','gcs','barthel','morse','braden','mods','pcs'];
+  const idx = tabs.indexOf(tab);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ===== NEWS2 CALCULATION =====
+function calcNEWS2() {
+  // Sync inputs from patient tab
+  const syncFields = ['rr','spo2','sbp','hr','temp'];
+  syncFields.forEach(f => {
+    const ptVal = document.getElementById('vs-' + f);
+    const n2Val = document.getElementById('n2-' + f);
+    if (ptVal && ptVal.value && !n2Val.value) n2Val.value = ptVal.value;
+    if (n2Val && n2Val.value && !ptVal.value) ptVal.value = n2Val.value;
+  });
+
+  const rr = parseFloat(document.getElementById('n2-rr').value || document.getElementById('vs-rr').value);
+  const spo2 = parseFloat(document.getElementById('n2-spo2').value || document.getElementById('vs-spo2').value);
+  const o2 = (document.getElementById('n2-o2').value || document.getElementById('vs-o2').value) === 'yes';
+  const sbp = parseFloat(document.getElementById('n2-sbp').value || document.getElementById('vs-sbp').value);
+  const hr = parseFloat(document.getElementById('n2-hr').value || document.getElementById('vs-hr').value);
+  const avpu = (document.getElementById('n2-avpu').value || document.getElementById('vs-avpu').value);
+  const temp = parseFloat(document.getElementById('n2-temp').value || document.getElementById('vs-temp').value);
+
+  let total = 0, hasRed = false, filled = 0;
+
+  function scoreCell(id, val, cls) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = isNaN(val) ? '-' : val; el.className = 'news2-score-cell s' + cls; }
+  }
+
+  // RR
+  if (!isNaN(rr)) {
+    filled++;
+    const s = rr <= 8 ? 3 : rr <= 11 ? 1 : rr <= 20 ? 0 : rr <= 24 ? 1 : 3;
+    if (s === 3) hasRed = true;
+    total += s; scoreCell('n2-rr-s', s, s);
+  } else scoreCell('n2-rr-s', '-', 0);
+
+  // SpO2
+  if (!isNaN(spo2)) {
+    filled++;
+    const s = spo2 <= 91 ? 3 : spo2 <= 93 ? 2 : spo2 <= 95 ? 1 : 0;
+    if (s === 3) hasRed = true;
+    total += s; scoreCell('n2-spo2-s', s, s);
+  } else scoreCell('n2-spo2-s', '-', 0);
+
+  // O2
+  { const s = o2 ? 2 : 0; total += s; scoreCell('n2-o2-s', s, s); filled++; }
+
+  // SBP
+  if (!isNaN(sbp)) {
+    filled++;
+    const s = sbp <= 90 ? 3 : sbp <= 100 ? 2 : sbp <= 110 ? 1 : sbp <= 219 ? 0 : 3;
+    if (s === 3) hasRed = true;
+    total += s; scoreCell('n2-sbp-s', s, s);
+  } else scoreCell('n2-sbp-s', '-', 0);
+
+  // HR
+  if (!isNaN(hr)) {
+    filled++;
+    const s = hr <= 40 ? 3 : hr <= 50 ? 1 : hr <= 90 ? 0 : hr <= 110 ? 1 : hr <= 130 ? 2 : 3;
+    if (s === 3) hasRed = true;
+    total += s; scoreCell('n2-hr-s', s, s);
+  } else scoreCell('n2-hr-s', '-', 0);
+
+  // AVPU
+  { const s = avpu === 'A' ? 0 : 3; if (s === 3) hasRed = true; total += s; scoreCell('n2-avpu-s', s, s); filled++; }
+
+  // Temp
+  if (!isNaN(temp)) {
+    filled++;
+    const s = temp <= 35.0 ? 3 : temp <= 36.0 ? 1 : temp <= 38.0 ? 0 : temp <= 39.0 ? 1 : 3;
+    if (s === 3) hasRed = true;
+    total += s; scoreCell('n2-temp-s', s, s);
+  } else scoreCell('n2-temp-s', '-', 0);
+
+  if (filled < 3) {
+    updateNewsDisplay('vs-news2-display', 'vs-news2-score', 'vs-news2-interp', null, null);
+    updateNewsDisplay('news2-display', 'news2-total', 'news2-interp', null, null);
+    state.news2 = null;
+  } else {
+    state.news2 = total;
+    updateNewsDisplay('vs-news2-display', 'vs-news2-score', 'vs-news2-interp', total, hasRed);
+    updateNewsDisplay('news2-display', 'news2-total', 'news2-interp', total, hasRed);
+  }
+
+  updateSummary();
+  updateEmergency();
+}
+
+function updateNewsDisplay(dispId, numId, interpId, total, hasRed) {
+  const disp = document.getElementById(dispId);
+  const num = document.getElementById(numId);
+  const interp = document.getElementById(interpId);
+  if (total === null) {
+    disp.className = 'score-display risk-neutral';
+    num.textContent = '-';
+    interp.textContent = 'กรอกข้อมูลเพื่อคำนวณ';
+    return;
+  }
+  num.textContent = total;
+  let cls, txt;
+  if (hasRed || total >= 7) { cls = 'risk-critical'; txt = '🚨 ความเสี่ยงสูง — แจ้งแพทย์ทันที'; }
+  else if (total >= 5) { cls = 'risk-high'; txt = '⚠️ ความเสี่ยงปานกลาง — แจ้งแพทย์'; }
+  else if (total >= 1) { cls = 'risk-med'; txt = '⚡ ความเสี่ยงต่ำ — ประเมินทุก 4-6 ชม.'; }
+  else { cls = 'risk-low'; txt = '✅ ความเสี่ยงต่ำมาก — ตามรอบปกติ'; }
+  disp.className = 'score-display ' + cls;
+  interp.textContent = txt;
+}
+
+// ===== GCS =====
+let gcsE = null, gcsV = null, gcsM = null;
+function selectGCS(cat, val, el) {
+  document.querySelectorAll('[onclick^="selectGCS(\'' + cat + '\'"]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  if (cat === 'E') gcsE = val;
+  if (cat === 'V') gcsV = val;
+  if (cat === 'M') gcsM = val;
+  calcGCS();
+}
+function calcGCS() {
+  const disp = document.getElementById('gcs-display');
+  const total = document.getElementById('gcs-total');
+  const detail = document.getElementById('gcs-detail');
+  if (gcsE === null || gcsV === null || gcsM === null) {
+    disp.className = 'score-display risk-neutral';
+    total.textContent = '-';
+    detail.textContent = 'E? V? M?';
+    state.gcs = null;
+    updateSummary(); return;
+  }
+  const sum = gcsE + gcsV + gcsM;
+  state.gcs = sum;
+  total.textContent = sum;
+  detail.textContent = 'E' + gcsE + ' V' + gcsV + ' M' + gcsM;
+  let cls;
+  if (sum <= 8) cls = 'risk-critical';
+  else if (sum <= 12) cls = 'risk-high';
+  else cls = 'risk-low';
+  disp.className = 'score-display ' + cls;
+  updateSummary(); updateEmergency();
+}
+
+// ===== BARTHEL =====
+const barthelScores = {};
+function selectBarthel(item, val, el) {
+  document.querySelectorAll('[onclick^="selectBarthel(' + item + ',"]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  barthelScores[item] = val;
+  calcBarthel();
+}
+function calcBarthel() {
+  const disp = document.getElementById('barthel-display');
+  const total = document.getElementById('barthel-total');
+  const interp = document.getElementById('barthel-interp');
+  const keys = Object.keys(barthelScores).length;
+  if (keys < 10) {
+    disp.className = 'score-display risk-neutral';
+    total.textContent = Object.values(barthelScores).reduce((a,b)=>a+b,0);
+    interp.textContent = 'เลือกรายการ ' + keys + '/10 รายการ';
+    state.barthel = null; updateSummary(); return;
+  }
+  const sum = Object.values(barthelScores).reduce((a,b)=>a+b,0);
+  state.barthel = sum;
+  total.textContent = sum;
+  let cls, txt;
+  if (sum >= 91) { cls = 'risk-low'; txt = 'ช่วยตัวเองได้ดี (Minimal dependence)'; }
+  else if (sum >= 61) { cls = 'risk-med'; txt = 'พึ่งพาบางส่วน (Mild dependence)'; }
+  else if (sum >= 21) { cls = 'risk-high'; txt = 'พึ่งพาปานกลาง (Moderate dependence)'; }
+  else if (sum >= 1) { cls = 'risk-critical'; txt = 'พึ่งพามาก (Severe dependence)'; }
+  else { cls = 'risk-critical'; txt = 'พึ่งพาทั้งหมด (Total dependence)'; }
+  disp.className = 'score-display ' + cls;
+  interp.textContent = txt;
+  updateSummary();
+}
+
+// ===== MORSE FALL =====
+const morseScores = {};
+function selectMorse(item, val, el) {
+  document.querySelectorAll('[onclick^="selectMorse(' + item + ',"]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  morseScores[item] = val;
+  calcMorse();
+}
+function calcMorse() {
+  const disp = document.getElementById('morse-display');
+  const total = document.getElementById('morse-total');
+  const interp = document.getElementById('morse-interp');
+  const keys = Object.keys(morseScores).length;
+  if (keys < 6) {
+    disp.className = 'score-display risk-neutral';
+    total.textContent = Object.values(morseScores).reduce((a,b)=>a+b,0);
+    interp.textContent = 'เลือกรายการ ' + keys + '/6 รายการ';
+    state.morse = null; updateSummary(); return;
+  }
+  const sum = Object.values(morseScores).reduce((a,b)=>a+b,0);
+  state.morse = sum;
+  total.textContent = sum;
+  let cls, txt;
+  if (sum >= 51) { cls = 'risk-critical'; txt = '⚠️ ความเสี่ยงสูง — มาตรการสูงสุด + Bed alarm'; }
+  else if (sum >= 25) { cls = 'risk-med'; txt = '⚡ ความเสี่ยงปานกลาง — ราวกั้นเตียง สัญญาณเตือน'; }
+  else { cls = 'risk-low'; txt = '✅ ความเสี่ยงต่ำ — ดูแลตามปกติ'; }
+  disp.className = 'score-display ' + cls;
+  interp.textContent = txt;
+  updateSummary();
+}
+
+// ===== BRADEN =====
+const bradenScores = {};
+function selectBraden(domain, val, el) {
+  document.querySelectorAll('[onclick^="selectBraden(' + domain + ',"]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  bradenScores[domain] = val;
+  const sEl = document.getElementById('bd-' + domain + '-s');
+  if (sEl) sEl.textContent = val;
+  calcBraden();
+}
+function calcBraden() {
+  const disp = document.getElementById('braden-display');
+  const total = document.getElementById('braden-total');
+  const interp = document.getElementById('braden-interp');
+  const keys = Object.keys(bradenScores).length;
+  if (keys < 6) {
+    disp.className = 'score-display risk-neutral';
+    total.textContent = Object.values(bradenScores).reduce((a,b)=>a+b,0);
+    interp.textContent = 'เลือกรายการ ' + keys + '/6 รายการ';
+    state.braden = null; updateSummary(); return;
+  }
+  const sum = Object.values(bradenScores).reduce((a,b)=>a+b,0);
+  state.braden = sum;
+  total.textContent = sum;
+  let cls, txt;
+  if (sum <= 9) { cls = 'risk-critical'; txt = '🚨 เสี่ยงสูงมาก — ที่นอนแรงดันต่ำ กลุ่มดูแลแผล'; }
+  else if (sum <= 12) { cls = 'risk-critical'; txt = '⚠️ เสี่ยงสูง — ที่นอนลม ดูแลโภชนาการ'; }
+  else if (sum <= 14) { cls = 'risk-high'; txt = '⚡ เสี่ยงปานกลาง — แผ่นรองลม/โฟม'; }
+  else if (sum <= 18) { cls = 'risk-med'; txt = '⚡ เสี่ยงต่ำ — พลิกตะแคงทุก 2 ชม.'; }
+  else { cls = 'risk-low'; txt = '✅ ไม่มีความเสี่ยง — ดูแลผิวตามปกติ'; }
+  disp.className = 'score-display ' + cls;
+  interp.textContent = txt;
+  updateSummary();
+}
+
+// ===== MODS =====
+function calcMODS() {
+  const fields = ['resp','renal','liver','cardio','cns','hema'];
+  let total = 0, filled = 0;
+  fields.forEach(f => {
+    const el = document.getElementById('mods-' + f);
+    const sv = document.getElementById('mods-' + f + '-s');
+    if (el && el.value !== '') {
+      const v = parseInt(el.value);
+      total += v; filled++;
+      sv.textContent = v;
+      sv.style.color = v >= 3 ? 'var(--red)' : v >= 2 ? 'var(--orange)' : v >= 1 ? 'var(--yellow)' : 'var(--green)';
+    } else if (sv) sv.textContent = '-';
+  });
+
+  const disp = document.getElementById('mods-display');
+  const tot = document.getElementById('mods-total');
+  const interp = document.getElementById('mods-interp');
+  if (filled < 6) {
+    disp.className = 'score-display risk-neutral';
+    tot.textContent = total;
+    interp.textContent = 'เลือกรายการ ' + filled + '/6 ระบบ';
+    state.mods = null; updateSummary(); return;
+  }
+  state.mods = total;
+  tot.textContent = total;
+  let cls, txt;
+  if (total >= 13) { cls = 'risk-purple'; txt = '🚨 รุนแรงมาก — อัตราเสียชีวิตสูง Refer ด่วน'; }
+  else if (total >= 9) { cls = 'risk-critical'; txt = '⚠️ รุนแรง — พิจารณาส่งต่อ ICU'; }
+  else if (total >= 5) { cls = 'risk-high'; txt = '⚡ ปานกลาง — เพิ่มการติดตาม'; }
+  else { cls = 'risk-low'; txt = '✅ ปกติ/เล็กน้อย — เฝ้าระวังตามปกติ'; }
+  disp.className = 'score-display ' + cls;
+  interp.textContent = txt;
+  updateSummary();
+}
+
+// ===== PCS ASSESSMENT =====
+const pcsScores = {};
+function selectPCS(domain, val, el) {
+  document.querySelectorAll('[onclick^="selectPCS(' + domain + ',"]').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  pcsScores[domain] = val;
+  calcPCS();
+}
+
+function calcPCS() {
+  const keys = Object.keys(pcsScores).length;
+  const domEl = ['pd-1','pd-2','pd-3','pd-4','pd-5'];
+  domEl.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = pcsScores[i+1] !== undefined ? pcsScores[i+1] : '-';
+  });
+
+  if (keys < 5) {
+    document.getElementById('pcs-level-num').textContent = '-';
+    document.getElementById('pcs-level-name').textContent = 'ยังไม่ได้ประเมิน (เลือก ' + keys + '/5 ด้าน)';
+    document.getElementById('pcs-nhppd').textContent = '-';
+    document.getElementById('pcs-score-sum').textContent = Object.values(pcsScores).reduce((a,b)=>a+b,0) || '-';
+    document.getElementById('pcs-action-box').style.display = 'none';
+    resetPCSBar();
+    updateSummary(); return;
+  }
+
+  const sum = Object.values(pcsScores).reduce((a,b)=>a+b,0);
+  document.getElementById('pcs-score-sum').textContent = sum;
+  document.getElementById('pcs-big').textContent = sum;
+
+  let level, name, nhppd, cls, actions;
+  if (sum <= 11) {
+    level = 1; name = 'Minimal Care'; nhppd = '1.5 ชม./วัน'; cls = 'risk-low';
+    actions = `<p><strong>สิ่งที่พยาบาลต้องดำเนินการ:</strong></p><ul>
+      <li>ประเมินสัญญาณชีพตามรอบมาตรฐาน (ทุก 8 ชั่วโมง)</li>
+      <li>จ่ายยาตามคำสั่งแพทย์ สังเกตอาการข้างเคียง</li>
+      <li>ให้ข้อมูลสุขศึกษาและเตรียมความพร้อมก่อนจำหน่าย</li>
+      <li>บันทึกการพยาบาลตามมาตรฐาน</li></ul>`;
+  } else if (sum <= 15) {
+    level = 2; name = 'Moderate Care'; nhppd = '3.5 ชม./วัน'; cls = 'risk-med';
+    actions = `<p><strong>สิ่งที่พยาบาลต้องดำเนินการ:</strong></p><ul>
+      <li>ประเมินสัญญาณชีพทุก 4–6 ชั่วโมง</li>
+      <li>ดูแลสาย IV และบริหารยาอย่างถูกต้องและปลอดภัย</li>
+      <li>ทำแผล พันแผล ตามแผนการรักษา</li>
+      <li>ประเมินความเสี่ยงล้มหกล้ม (Morse) และแผลกดทับ (Braden) รายวัน</li>
+      <li>ให้การช่วยเหลือ ADL บางส่วน และให้สุขศึกษา</li></ul>`;
+  } else if (sum <= 20) {
+    level = 3; name = 'Total Care / Semi-Critical'; nhppd = '5.5 ชม./วัน'; cls = 'risk-high';
+    actions = `<p><strong>สิ่งที่พยาบาลต้องดำเนินการ:</strong></p><ul>
+      <li>ประเมินสัญญาณชีพทุก 2–4 ชั่วโมง</li>
+      <li>ดูแลความสะอาดร่างกาย พลิกตะแคงทุก 2 ชั่วโมง</li>
+      <li>ดูแล NG Tube: ประเมิน residual ก่อนให้อาหาร</li>
+      <li>ดูแลสายสวนปัสสาวะ บันทึก I/O ทุก 8 ชั่วโมง</li>
+      <li>ประเมินและป้องกันภาวะแทรกซ้อน (ปอดอักเสบ ลิ่มเลือด แผลกดทับ)</li>
+      <li>รายงานแพทย์เมื่ออาการเปลี่ยนแปลง</li></ul>`;
+  } else if (sum <= 23) {
+    level = 4; name = 'Intensive Care / Critical'; nhppd = '7.5 ชม./วัน'; cls = 'risk-critical';
+    actions = `<p><strong>สิ่งที่พยาบาลต้องดำเนินการ:</strong></p><ul>
+      <li>ประเมินสัญญาณชีพและ NEWS ทุก 1 ชั่วโมง</li>
+      <li>ติดตาม EKG SpO₂ อย่างต่อเนื่อง รายงานแพทย์ทันทีเมื่อ NEWS ≥7</li>
+      <li>บริหารยา Vasopressors/IV อย่างระมัดระวัง บันทึก Titration</li>
+      <li>ดูแล Central line ด้วยเทคนิค Aseptic อย่างเคร่งครัด</li>
+      <li>เตรียมพร้อม Resuscitation ตลอดเวร</li>
+      <li>พิจารณาการส่งต่อ (Refer) หากเกินขีดความสามารถ</li></ul>`;
+  } else {
+    level = 5; name = 'Highly Intensive Care'; nhppd = '> 10 ชม./วัน'; cls = 'risk-purple';
+    actions = `<p><strong>สิ่งที่พยาบาลต้องดำเนินการ:</strong></p><ul>
+      <li>เฝ้าระวังและบันทึกสัญญาณชีพอย่างต่อเนื่อง (ทุก 15–30 นาที)</li>
+      <li>ดูแล Ventilator ตรวจสอบ Setting ทุกเวร ดูแล ETT/Tracheostomy</li>
+      <li>บริหารยาและสารน้ำอย่างแม่นยำ บันทึก I/O ทุก 1 ชั่วโมง</li>
+      <li>ประสานทีมแพทย์อย่างต่อเนื่อง เตรียมการส่งต่อเมื่อจำเป็น</li>
+      <li>สื่อสารกับญาติและให้ข้อมูลอย่างสม่ำเสมอ</li>
+      <li>บันทึกเวชระเบียนอย่างครบถ้วนและทันเวลา</li></ul>`;
+  }
+
+  const levelNumEl = document.getElementById('pcs-level-num');
+  levelNumEl.textContent = level;
+  levelNumEl.style.color = ['','var(--green)','var(--yellow)','var(--orange)','var(--red)','var(--purple)'][level];
+  document.getElementById('pcs-level-name').textContent = level + ' — ' + name;
+  document.getElementById('pcs-nhppd').textContent = '⏱ ชั่วโมงการพยาบาล: ' + nhppd;
+
+  // Bar
+  for (let i = 1; i <= 5; i++) {
+    const seg = document.getElementById('pcs-bar-' + i);
+    seg.className = 'pcs-level-seg' + (i <= level ? ' active-' + level : '');
+  }
+
+  // Action box
+  const actBox = document.getElementById('pcs-action-box');
+  const colors = { 'risk-low':'var(--green-bg)','risk-med':'var(--yellow-bg)','risk-high':'var(--orange-bg)','risk-critical':'var(--red-bg)','risk-purple':'var(--purple-bg)' };
+  const borders = { 'risk-low':'var(--green)','risk-med':'var(--yellow)','risk-high':'var(--orange)','risk-critical':'var(--red)','risk-purple':'var(--purple)' };
+  actBox.style.background = colors[cls] || 'var(--bg)';
+  actBox.style.border = '1.5px solid ' + (borders[cls] || 'var(--border)');
+  document.getElementById('pcs-action-title').textContent = '📋 แนวทางปฏิบัติสำหรับ PCS ประเภทที่ ' + level + ' (' + name + ')';
+  document.getElementById('pcs-action-content').innerHTML = actions;
+  actBox.style.display = 'block';
+
+  state.pcsLevel = level;
+  state.pcsName = name;
+  updateSummary();
+}
+
+function resetPCSBar() {
+  for (let i = 1; i <= 5; i++) document.getElementById('pcs-bar-' + i).className = 'pcs-level-seg';
+}
+
+// ===== SUMMARY UPDATE =====
+function updateSummary() {
+  function setBadge(id, val, cls) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val !== null ? val : '-';
+    el.className = val !== null ? 'badge-' + cls : 'badge-na';
+  }
+
+  // NEWS2
+  if (state.news2 !== null) {
+    const n = state.news2;
+    const cls = n >= 7 ? '4' : n >= 5 ? '3' : n >= 1 ? '2' : '1';
+    setBadge('sum-news2', n, cls);
+    document.getElementById('f-news2').textContent = n;
+  } else { setBadge('sum-news2', null, 'na'); document.getElementById('f-news2').textContent = '-'; }
+
+  // GCS
+  const gcsSum = gcsE !== null && gcsV !== null && gcsM !== null ? gcsE + gcsV + gcsM : null;
+  if (gcsSum !== null) {
+    const cls = gcsSum <= 8 ? '4' : gcsSum <= 12 ? '3' : '1';
+    setBadge('sum-gcs', gcsSum, cls);
+    document.getElementById('f-gcs').textContent = gcsSum;
+  } else { setBadge('sum-gcs', null, 'na'); document.getElementById('f-gcs').textContent = '-'; }
+
+  // Barthel
+  if (state.barthel !== null && state.barthel !== undefined) {
+    const b = state.barthel;
+    const cls = b >= 91 ? '1' : b >= 61 ? '2' : b >= 21 ? '3' : '4';
+    setBadge('sum-barthel', b, cls);
+    document.getElementById('f-barthel').textContent = b;
+  } else { setBadge('sum-barthel', null, 'na'); document.getElementById('f-barthel').textContent = '-'; }
+
+  // Morse
+  if (state.morse !== null && state.morse !== undefined) {
+    const m = state.morse;
+    const cls = m >= 51 ? '4' : m >= 25 ? '2' : '1';
+    setBadge('sum-morse', m, cls);
+    document.getElementById('f-morse').textContent = m;
+  } else { setBadge('sum-morse', null, 'na'); document.getElementById('f-morse').textContent = '-'; }
+
+  // Braden
+  if (state.braden !== null && state.braden !== undefined) {
+    const b = state.braden;
+    const cls = b <= 12 ? '4' : b <= 14 ? '3' : b <= 18 ? '2' : '1';
+    setBadge('sum-braden', b, cls);
+    document.getElementById('f-braden').textContent = b;
+  } else { setBadge('sum-braden', null, 'na'); document.getElementById('f-braden').textContent = '-'; }
+
+  // MODS
+  if (state.mods !== null && state.mods !== undefined) {
+    const m = state.mods;
+    const cls = m >= 13 ? '5' : m >= 9 ? '4' : m >= 5 ? '3' : '1';
+    setBadge('sum-mods', m, cls);
+  } else { setBadge('sum-mods', null, 'na'); }
+
+  // PCS
+  if (state.pcsLevel) {
+    const lvl = state.pcsLevel;
+    setBadge('sum-pcs', 'ประเภท ' + lvl + ' — ' + state.pcsName, lvl.toString());
+    document.getElementById('f-pcs-level').textContent = lvl;
+    document.getElementById('f-pcs-name').textContent = state.pcsName;
+  } else {
+    setBadge('sum-pcs', null, 'na');
+    document.getElementById('f-pcs-level').textContent = '-';
+    document.getElementById('f-pcs-name').textContent = 'ยังไม่ได้ประเมิน';
+  }
+}
+
+// ===== EMERGENCY TRIGGERS =====
+function updateEmergency() {
+  const list = document.getElementById('emergency-list');
+  const triggers = [];
+
+  const rr = parseFloat(document.getElementById('vs-rr').value);
+  const sbp = parseFloat(document.getElementById('vs-sbp').value);
+  const hr = parseFloat(document.getElementById('vs-hr').value);
+  const spo2 = parseFloat(document.getElementById('vs-spo2').value);
+
+  if (!isNaN(rr) && (rr < 10 || rr > 30)) triggers.push('🚨 อัตราหายใจ ' + rr + ' ครั้ง/นาที (ผิดปกติ: <10 หรือ >30)');
+  if (!isNaN(sbp) && (sbp < 90 || sbp > 180)) triggers.push('🚨 ความดันโลหิต SBP ' + sbp + ' mmHg (ผิดปกติ: <90 หรือ >180)');
+  if (!isNaN(hr) && (hr < 40 || hr > 150)) triggers.push('🚨 ชีพจร ' + hr + ' ครั้ง/นาที (ผิดปกติ: <40 หรือ >150)');
+  if (!isNaN(spo2) && spo2 < 92) triggers.push('🚨 SpO₂ ' + spo2 + '% (<92% แม้ได้รับออกซิเจน)');
+  if (state.news2 !== null && state.news2 >= 7) triggers.push('🚨 NEWS2 ≥7 (' + state.news2 + ') — แจ้งแพทย์ทันที');
+  const gcsSum = gcsE !== null && gcsV !== null && gcsM !== null ? gcsE + gcsV + gcsM : null;
+  if (gcsSum !== null && gcsSum <= 8) triggers.push('🚨 GCS ≤8 (E' + gcsE + 'V' + gcsV + 'M' + gcsM + ') — ดูแลทางเดินหายใจ');
+
+  if (triggers.length === 0) {
+    list.innerHTML = '<div style="color:var(--green);font-weight:600;">✅ ไม่พบสัญญาณเตือนฉุกเฉิน</div>';
+  } else {
+    list.innerHTML = triggers.map(t => `<div style="color:var(--red);font-weight:600;padding:4px 0;border-bottom:1px solid var(--red-bg);">${t}</div>`).join('');
+  }
+}
+
+// ===== CLEAR ALL =====
+function clearAll() {
+  if (!confirm('ต้องการล้างข้อมูลทั้งหมดใช่ไหม?')) return;
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  document.querySelectorAll('.gcs-option, .barthel-option, .morse-option, .braden-option, .assess-item').forEach(el => el.classList.remove('selected'));
+  gcsE = null; gcsV = null; gcsM = null;
+  Object.keys(barthelScores).forEach(k => delete barthelScores[k]);
+  Object.keys(morseScores).forEach(k => delete morseScores[k]);
+  Object.keys(bradenScores).forEach(k => delete bradenScores[k]);
+  Object.keys(pcsScores).forEach(k => delete pcsScores[k]);
+  Object.assign(state, { news2: null, gcs: null, barthel: null, morse: null, braden: null, mods: null, pcsLevel: null, pcsName: null });
+  ['bd-1-s','bd-2-s','bd-3-s','bd-4-s','bd-5-s'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '-'; });
+  ['mods-resp-s','mods-renal-s','mods-liver-s','mods-cardio-s','mods-cns-s','mods-hema-s'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '-'; });
+  resetPCSBar();
+  document.getElementById('pcs-action-box').style.display = 'none';
+  document.getElementById('pcs-level-num').textContent = '-';
+  document.getElementById('pcs-level-name').textContent = 'ยังไม่ได้ประเมิน';
+  document.getElementById('pcs-nhppd').textContent = '-';
+  document.getElementById('pcs-score-sum').textContent = '-';
+  ['pd-1','pd-2','pd-3','pd-4','pd-5'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '-'; });
+  calcNEWS2(); calcGCS(); calcBarthel(); calcMorse(); calcBraden(); calcMODS();
+  updateSummary(); updateEmergency();
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+  const today = new Date().toISOString().split('T')[0];
+  const dtEl = document.getElementById('pt-date');
+  if (dtEl) dtEl.value = today;
+  updateEmergency();
+});
+</script>
+</body>
+</html>
