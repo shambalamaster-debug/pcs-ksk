@@ -716,26 +716,26 @@
     <div class="card-header">💊 สัญญาณชีพ (Vital Signs)</div>
     <div class="card-body">
       <div class="input-row triple">
-        <div><label>อุณหภูมิ (°C)</label><input type="number" id="vs-temp" placeholder="36.5–37.4" step="0.1" oninput="calcNEWS2()"></div>
-        <div><label>ชีพจร (ครั้ง/นาที)</label><input type="number" id="vs-hr" placeholder="60–100" oninput="calcNEWS2()"></div>
-        <div><label>อัตราหายใจ (ครั้ง/นาที)</label><input type="number" id="vs-rr" placeholder="12–20" oninput="calcNEWS2()"></div>
+        <div><label>อุณหภูมิ (°C)</label><input type="number" id="vs-temp" placeholder="36.5–37.4" step="0.1" oninput="syncVS('vs')"></div>
+        <div><label>ชีพจร (ครั้ง/นาที)</label><input type="number" id="vs-hr" placeholder="60–100" oninput="syncVS('vs')"></div>
+        <div><label>อัตราหายใจ (ครั้ง/นาที)</label><input type="number" id="vs-rr" placeholder="12–20" oninput="syncVS('vs')"></div>
       </div>
       <div class="input-row triple">
-        <div><label>SBP (mmHg)</label><input type="number" id="vs-sbp" placeholder="90–140" oninput="calcNEWS2()"></div>
+        <div><label>SBP (mmHg)</label><input type="number" id="vs-sbp" placeholder="90–140" oninput="syncVS('vs')"></div>
         <div><label>DBP (mmHg)</label><input type="number" id="vs-dbp" placeholder="60–90"></div>
-        <div><label>SpO₂ (%)</label><input type="number" id="vs-spo2" placeholder="≥95" oninput="calcNEWS2()"></div>
+        <div><label>SpO₂ (%)</label><input type="number" id="vs-spo2" placeholder="≥95" oninput="syncVS('vs')"></div>
       </div>
       <div class="input-row">
         <div>
           <label>ออกซิเจนเสริม</label>
-          <select id="vs-o2" onchange="calcNEWS2()">
+          <select id="vs-o2" onchange="syncVS('vs')">
             <option value="no">ไม่ได้รับ O₂ เสริม</option>
             <option value="yes">ได้รับ O₂ เสริม</option>
           </select>
         </div>
         <div>
           <label>ระดับความรู้สึกตัว (AVPU)</label>
-          <select id="vs-avpu" onchange="calcNEWS2()">
+          <select id="vs-avpu" onchange="syncVS('vs')">
             <option value="A">A - Alert (รู้สึกตัวดี)</option>
             <option value="C">C/V/P/U - ผิดปกติ</option>
           </select>
@@ -826,20 +826,20 @@
           <tr>
             <td style="text-align:left;font-weight:600;">อัตราหายใจ (RR)</td>
             <td>≤8</td><td>-</td><td>9–11</td><td>12–20</td><td>21–24</td><td>-</td><td>≥25</td>
-            <td><input class="news2-input" type="number" id="n2-rr" placeholder="ครั้ง/นาที" oninput="calcNEWS2()"></td>
+            <td><input class="news2-input" type="number" id="n2-rr" placeholder="ครั้ง/นาที" oninput="syncVS('n2')"></td>
             <td class="news2-score-cell s0" id="n2-rr-s">-</td>
           </tr>
           <tr>
             <td style="text-align:left;font-weight:600;">SpO₂ (%)</td>
             <td>≤91</td><td>92–93</td><td>94–95</td><td>≥96</td><td>-</td><td>-</td><td>-</td>
-            <td><input class="news2-input" type="number" id="n2-spo2" placeholder="%" oninput="calcNEWS2()"></td>
+            <td><input class="news2-input" type="number" id="n2-spo2" placeholder="%" oninput="syncVS('n2')"></td>
             <td class="news2-score-cell s0" id="n2-spo2-s">-</td>
           </tr>
           <tr>
             <td style="text-align:left;font-weight:600;">ออกซิเจนเสริม</td>
             <td>-</td><td>ใช้ O₂</td><td>-</td><td>ไม่ใช้</td><td>-</td><td>-</td><td>-</td>
             <td>
-              <select class="news2-input" id="n2-o2" onchange="calcNEWS2()" style="width:100%;">
+              <select class="news2-input" id="n2-o2" onchange="syncVS('n2')" style="width:100%;">
                 <option value="no">ไม่ใช้</option>
                 <option value="yes">ใช้ O₂</option>
               </select>
@@ -849,20 +849,20 @@
           <tr>
             <td style="text-align:left;font-weight:600;">BP Systolic (mmHg)</td>
             <td>≤90</td><td>91–100</td><td>101–110</td><td>111–219</td><td>-</td><td>-</td><td>≥220</td>
-            <td><input class="news2-input" type="number" id="n2-sbp" placeholder="mmHg" oninput="calcNEWS2()"></td>
+            <td><input class="news2-input" type="number" id="n2-sbp" placeholder="mmHg" oninput="syncVS('n2')"></td>
             <td class="news2-score-cell s0" id="n2-sbp-s">-</td>
           </tr>
           <tr>
             <td style="text-align:left;font-weight:600;">ชีพจร (HR)</td>
             <td>≤40</td><td>-</td><td>41–50</td><td>51–90</td><td>91–110</td><td>111–130</td><td>≥131</td>
-            <td><input class="news2-input" type="number" id="n2-hr" placeholder="ครั้ง/นาที" oninput="calcNEWS2()"></td>
+            <td><input class="news2-input" type="number" id="n2-hr" placeholder="ครั้ง/นาที" oninput="syncVS('n2')"></td>
             <td class="news2-score-cell s0" id="n2-hr-s">-</td>
           </tr>
           <tr>
             <td style="text-align:left;font-weight:600;">ระดับสติ (AVPU)</td>
             <td>-</td><td>-</td><td>-</td><td>Alert</td><td>CVPU</td><td>-</td><td>-</td>
             <td>
-              <select class="news2-input" id="n2-avpu" onchange="calcNEWS2()" style="width:100%;">
+              <select class="news2-input" id="n2-avpu" onchange="syncVS('n2')" style="width:100%;">
                 <option value="A">A - Alert</option>
                 <option value="C">C/V/P/U</option>
               </select>
@@ -872,7 +872,7 @@
           <tr>
             <td style="text-align:left;font-weight:600;">อุณหภูมิกาย (°C)</td>
             <td>≤35.0</td><td>-</td><td>35.1–36.0</td><td>36.1–38.0</td><td>38.1–39.0</td><td>-</td><td>≥39.1</td>
-            <td><input class="news2-input" type="number" id="n2-temp" placeholder="°C" step="0.1" oninput="calcNEWS2()"></td>
+            <td><input class="news2-input" type="number" id="n2-temp" placeholder="°C" step="0.1" oninput="syncVS('n2')"></td>
             <td class="news2-score-cell s0" id="n2-temp-s">-</td>
           </tr>
         </tbody>
@@ -1764,23 +1764,28 @@ function showTab(tab) {
 }
 
 // ===== NEWS2 CALCULATION =====
-function calcNEWS2() {
-  // Sync inputs from patient tab
-  const syncFields = ['rr','spo2','sbp','hr','temp'];
-  syncFields.forEach(f => {
-    const ptVal = document.getElementById('vs-' + f);
-    const n2Val = document.getElementById('n2-' + f);
-    if (ptVal && ptVal.value && !n2Val.value) n2Val.value = ptVal.value;
-    if (n2Val && n2Val.value && !ptVal.value) ptVal.value = n2Val.value;
-  });
+function syncVS(src) {
+  const numF = ['rr','spo2','sbp','hr','temp'];
+  if (src === 'vs') {
+    numF.forEach(f => { document.getElementById('n2-'+f).value = document.getElementById('vs-'+f).value; });
+    document.getElementById('n2-o2').value = document.getElementById('vs-o2').value;
+    document.getElementById('n2-avpu').value = document.getElementById('vs-avpu').value;
+  } else {
+    numF.forEach(f => { document.getElementById('vs-'+f).value = document.getElementById('n2-'+f).value; });
+    document.getElementById('vs-o2').value = document.getElementById('n2-o2').value;
+    document.getElementById('vs-avpu').value = document.getElementById('n2-avpu').value;
+  }
+  calcNEWS2();
+}
 
-  const rr = parseFloat(document.getElementById('n2-rr').value || document.getElementById('vs-rr').value);
-  const spo2 = parseFloat(document.getElementById('n2-spo2').value || document.getElementById('vs-spo2').value);
-  const o2 = (document.getElementById('n2-o2').value || document.getElementById('vs-o2').value) === 'yes';
-  const sbp = parseFloat(document.getElementById('n2-sbp').value || document.getElementById('vs-sbp').value);
-  const hr = parseFloat(document.getElementById('n2-hr').value || document.getElementById('vs-hr').value);
-  const avpu = (document.getElementById('n2-avpu').value || document.getElementById('vs-avpu').value);
-  const temp = parseFloat(document.getElementById('n2-temp').value || document.getElementById('vs-temp').value);
+function calcNEWS2() {
+  const rr   = parseFloat(document.getElementById('n2-rr').value);
+  const spo2 = parseFloat(document.getElementById('n2-spo2').value);
+  const o2   = document.getElementById('n2-o2').value === 'yes';
+  const sbp  = parseFloat(document.getElementById('n2-sbp').value);
+  const hr   = parseFloat(document.getElementById('n2-hr').value);
+  const avpu = document.getElementById('n2-avpu').value;
+  const temp = parseFloat(document.getElementById('n2-temp').value);
 
   let total = 0, hasRed = false, filled = 0;
 
@@ -2066,7 +2071,6 @@ function calcPCS() {
 
   const sum = Object.values(pcsScores).reduce((a,b)=>a+b,0);
   document.getElementById('pcs-score-sum').textContent = sum;
-  document.getElementById('pcs-big').textContent = sum;
 
   let level, name, nhppd, cls, actions;
   if (sum <= 11) {
@@ -2218,10 +2222,10 @@ function updateEmergency() {
   const list = document.getElementById('emergency-list');
   const triggers = [];
 
-  const rr = parseFloat(document.getElementById('vs-rr').value);
-  const sbp = parseFloat(document.getElementById('vs-sbp').value);
-  const hr = parseFloat(document.getElementById('vs-hr').value);
-  const spo2 = parseFloat(document.getElementById('vs-spo2').value);
+  const rr = parseFloat(document.getElementById('n2-rr').value);
+  const sbp = parseFloat(document.getElementById('n2-sbp').value);
+  const hr = parseFloat(document.getElementById('n2-hr').value);
+  const spo2 = parseFloat(document.getElementById('n2-spo2').value);
 
   if (!isNaN(rr) && (rr < 10 || rr > 30)) triggers.push('🚨 อัตราหายใจ ' + rr + ' ครั้ง/นาที (ผิดปกติ: <10 หรือ >30)');
   if (!isNaN(sbp) && (sbp < 90 || sbp > 180)) triggers.push('🚨 ความดันโลหิต SBP ' + sbp + ' mmHg (ผิดปกติ: <90 หรือ >180)');
