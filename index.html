@@ -1844,8 +1844,10 @@ function calcNEWS2() {
     updateNewsDisplay('vs-news2-display', 'vs-news2-score', 'vs-news2-interp', null, null);
     updateNewsDisplay('news2-display', 'news2-total', 'news2-interp', null, null);
     state.news2 = null;
+    state.news2HasRed = false;
   } else {
     state.news2 = total;
+    state.news2HasRed = hasRed;
     updateNewsDisplay('vs-news2-display', 'vs-news2-score', 'vs-news2-interp', total, hasRed);
     updateNewsDisplay('news2-display', 'news2-total', 'news2-interp', total, hasRed);
   }
@@ -2220,26 +2222,99 @@ function updateSummary() {
 // ===== EMERGENCY TRIGGERS =====
 function updateEmergency() {
   const list = document.getElementById('emergency-list');
-  const triggers = [];
+  const critical = [];  // สีแดง — รายงานแพทย์ทันที
+  const warning  = [];  // สีส้ม — เฝ้าระวังใกล้ชิด
 
-  const rr = parseFloat(document.getElementById('n2-rr').value);
-  const sbp = parseFloat(document.getElementById('n2-sbp').value);
-  const hr = parseFloat(document.getElementById('n2-hr').value);
+  // --- สัญญาณชีพ ---
+  const rr   = parseFloat(document.getElementById('n2-rr').value);
+  const sbp  = parseFloat(document.getElementById('n2-sbp').value);
+  const hr   = parseFloat(document.getElementById('n2-hr').value);
   const spo2 = parseFloat(document.getElementById('n2-spo2').value);
+  const temp = parseFloat(document.getElementById('n2-temp').value);
+  const avpu = document.getElementById('n2-avpu').value;
 
-  if (!isNaN(rr) && (rr < 10 || rr > 30)) triggers.push('🚨 อัตราหายใจ ' + rr + ' ครั้ง/นาที (ผิดปกติ: <10 หรือ >30)');
-  if (!isNaN(sbp) && (sbp < 90 || sbp > 180)) triggers.push('🚨 ความดันโลหิต SBP ' + sbp + ' mmHg (ผิดปกติ: <90 หรือ >180)');
-  if (!isNaN(hr) && (hr < 40 || hr > 150)) triggers.push('🚨 ชีพจร ' + hr + ' ครั้ง/นาที (ผิดปกติ: <40 หรือ >150)');
-  if (!isNaN(spo2) && spo2 < 92) triggers.push('🚨 SpO₂ ' + spo2 + '% (<92% แม้ได้รับออกซิเจน)');
-  if (state.news2 !== null && state.news2 >= 7) triggers.push('🚨 NEWS2 ≥7 (' + state.news2 + ') — แจ้งแพทย์ทันที');
-  const gcsSum = gcsE !== null && gcsV !== null && gcsM !== null ? gcsE + gcsV + gcsM : null;
-  if (gcsSum !== null && gcsSum <= 8) triggers.push('🚨 GCS ≤8 (E' + gcsE + 'V' + gcsV + 'M' + gcsM + ') — ดูแลทางเดินหายใจ');
-
-  if (triggers.length === 0) {
-    list.innerHTML = '<div style="color:var(--green);font-weight:600;">✅ ไม่พบสัญญาณเตือนฉุกเฉิน</div>';
-  } else {
-    list.innerHTML = triggers.map(t => `<div style="color:var(--red);font-weight:600;padding:4px 0;border-bottom:1px solid var(--red-bg);">${t}</div>`).join('');
+  if (!isNaN(rr)) {
+    if (rr < 10 || rr > 30) critical.push('อัตราหายใจ ' + rr + ' ครั้ง/นาที — เกณฑ์วิกฤต (<10 หรือ >30)');
+    else if (rr < 12 || rr > 24) warning.push('อัตราหายใจ ' + rr + ' ครั้ง/นาที — ผิดปกติ (12–20 ปกติ)');
   }
+  if (!isNaN(sbp)) {
+    if (sbp < 90 || sbp > 180) critical.push('ความดันโลหิต SBP ' + sbp + ' mmHg — เกณฑ์วิกฤต (<90 หรือ >180)');
+    else if (sbp < 101 || sbp >= 220) warning.push('ความดันโลหิต SBP ' + sbp + ' mmHg — ผิดปกติ');
+  }
+  if (!isNaN(hr)) {
+    if (hr < 40 || hr > 150) critical.push('ชีพจร ' + hr + ' ครั้ง/นาที — เกณฑ์วิกฤต (<40 หรือ >150)');
+    else if (hr < 50 || hr > 110) warning.push('ชีพจร ' + hr + ' ครั้ง/นาที — ผิดปกติ');
+  }
+  if (!isNaN(spo2)) {
+    if (spo2 < 92) critical.push('SpO₂ ' + spo2 + '% — ต่ำวิกฤต (<92%)');
+    else if (spo2 < 96) warning.push('SpO₂ ' + spo2 + '% — ต่ำกว่าเกณฑ์ปกติ (<96%)');
+  }
+  if (!isNaN(temp)) {
+    if (temp <= 35.0) critical.push('อุณหภูมิ ' + temp + '°C — Hypothermia รุนแรง (≤35.0°C)');
+    else if (temp >= 39.1) critical.push('อุณหภูมิ ' + temp + '°C — ไข้สูงมาก (≥39.1°C)');
+    else if (temp < 36.1) warning.push('อุณหภูมิ ' + temp + '°C — ต่ำกว่าปกติ (<36.1°C)');
+    else if (temp > 38.0) warning.push('อุณหภูมิ ' + temp + '°C — ไข้ (>38.0°C)');
+  }
+  if (avpu && avpu !== 'A') critical.push('ระดับสติ CVPU — ไม่ตอบสนองปกติ (AVPU ≠ Alert)');
+
+  // --- NEWS2 ---
+  if (state.news2 !== null) {
+    if (state.news2 >= 7) critical.push('NEWS2 = ' + state.news2 + ' (≥7) — แจ้งแพทย์ทันที พิจารณา Refer');
+    else if (state.news2 >= 5) warning.push('NEWS2 = ' + state.news2 + ' (5–6) — ความเสี่ยงปานกลาง แจ้งแพทย์');
+  }
+  if (state.news2HasRed) critical.push('NEWS2 มีตัวชี้วัดสีแดง (คะแนน 3) — ความเสี่ยงสูงทันที');
+
+  // --- GCS ---
+  const gcsSum = gcsE !== null && gcsV !== null && gcsM !== null ? gcsE + gcsV + gcsM : null;
+  if (gcsSum !== null) {
+    if (gcsSum <= 8)  critical.push('GCS ' + gcsSum + ' (E'+gcsE+'V'+gcsV+'M'+gcsM+') — บาดเจ็บรุนแรง ดูแลทางเดินหายใจด่วน');
+    else if (gcsSum <= 12) warning.push('GCS ' + gcsSum + ' (E'+gcsE+'V'+gcsV+'M'+gcsM+') — บาดเจ็บปานกลาง เฝ้าระวัง');
+  }
+
+  // --- Barthel Index ---
+  if (state.barthel !== null && state.barthel !== undefined) {
+    if (state.barthel <= 20) warning.push('Barthel Index ' + state.barthel + ' — พึ่งพามาก (≤20) เสี่ยงแผลกดทับสูง');
+  }
+
+  // --- Morse Fall Scale ---
+  if (state.morse !== null && state.morse !== undefined) {
+    if (state.morse >= 51) critical.push('Morse Fall Scale ' + state.morse + ' (≥51) — ความเสี่ยงสูง ต้องมาตรการสูงสุด');
+    else if (state.morse >= 25) warning.push('Morse Fall Scale ' + state.morse + ' (25–50) — ความเสี่ยงปานกลาง');
+  }
+
+  // --- Braden Scale ---
+  if (state.braden !== null && state.braden !== undefined) {
+    if (state.braden <= 9)  critical.push('Braden Scale ' + state.braden + ' (≤9) — เสี่ยงแผลกดทับสูงมาก');
+    else if (state.braden <= 14) warning.push('Braden Scale ' + state.braden + ' (≤14) — เสี่ยงแผลกดทับปานกลาง–สูง');
+  }
+
+  // --- MODS ---
+  if (state.mods !== null && state.mods !== undefined) {
+    if (state.mods >= 13) critical.push('MODS Score ' + state.mods + ' (≥13) — รุนแรงมาก อัตราเสียชีวิตสูง Refer ด่วน');
+    else if (state.mods >= 9) critical.push('MODS Score ' + state.mods + ' (9–12) — รุนแรง พิจารณาส่งต่อ ICU');
+    else if (state.mods >= 5) warning.push('MODS Score ' + state.mods + ' (5–8) — ปานกลาง เพิ่มการติดตาม');
+  }
+
+  // --- PCS Level ---
+  if (state.pcsLevel) {
+    if (state.pcsLevel >= 4) critical.push('PCS ประเภทที่ ' + state.pcsLevel + ' (' + state.pcsName + ') — ต้องการพยาบาล ' + (state.pcsLevel === 4 ? '7.5' : '>10') + ' ชม./วัน');
+    else if (state.pcsLevel === 3) warning.push('PCS ประเภทที่ 3 (Total Care) — ต้องการพยาบาล 5.5 ชม./วัน');
+  }
+
+  // --- Render ---
+  let html = '';
+  if (critical.length > 0) {
+    html += '<div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--red-bg);">🚨 รายงานแพทย์ทันที</div>';
+    html += critical.map(t => `<div style="color:var(--red);font-weight:600;font-size:13px;padding:4px 0 4px 8px;border-left:3px solid var(--red);margin-bottom:4px;">${t}</div>`).join('');
+  }
+  if (warning.length > 0) {
+    html += '<div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:0.8px;text-transform:uppercase;margin:' + (critical.length > 0 ? '10px' : '0') + ' 0 6px;padding-bottom:4px;border-bottom:1px solid var(--orange-bg);">⚠️ เฝ้าระวังใกล้ชิด</div>';
+    html += warning.map(t => `<div style="color:var(--orange);font-weight:600;font-size:13px;padding:4px 0 4px 8px;border-left:3px solid var(--orange);margin-bottom:4px;">${t}</div>`).join('');
+  }
+  if (critical.length === 0 && warning.length === 0) {
+    html = '<div style="color:var(--green);font-weight:600;font-size:13px;">✅ ไม่พบสัญญาณเตือนฉุกเฉิน</div>';
+  }
+  list.innerHTML = html;
 }
 
 // ===== CLEAR ALL =====
@@ -2253,7 +2328,7 @@ function clearAll() {
   Object.keys(morseScores).forEach(k => delete morseScores[k]);
   Object.keys(bradenScores).forEach(k => delete bradenScores[k]);
   Object.keys(pcsScores).forEach(k => delete pcsScores[k]);
-  Object.assign(state, { news2: null, gcs: null, barthel: null, morse: null, braden: null, mods: null, pcsLevel: null, pcsName: null });
+  Object.assign(state, { news2: null, news2HasRed: false, gcs: null, barthel: null, morse: null, braden: null, mods: null, pcsLevel: null, pcsName: null });
   ['bd-1-s','bd-2-s','bd-3-s','bd-4-s','bd-5-s'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '-'; });
   ['mods-resp-s','mods-renal-s','mods-liver-s','mods-cardio-s','mods-cns-s','mods-hema-s'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '-'; });
   resetPCSBar();
